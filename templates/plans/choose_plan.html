@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Choose Your Plan{% endblock %}
+
+{% block content %}
+<div class="plans-container">
+  <div class="plans-header text-center">
+    <h1 class="plans-title">Choose Your Perfect Plan</h1>
+    <p class="plans-subtitle">Select the memorial plan that fits your needs</p>
+    <div class="header-divider"></div>
+  </div>
+
+  <div class="plans-grid">
+    {% for plan in plans %}
+    <div class="plan-card {% if plan.is_popular %}popular-plan{% endif %}">
+      {% if plan.is_popular %}
+      <div class="popular-badge">Most Popular</div>
+      {% endif %}
+      
+      <div class="plan-header">
+        <h3 class="plan-name">{{ plan.name }}</h3>
+        <div class="plan-price">
+          {% if plan.price == 0 %}
+            FREE
+          {% else %}
+            ${{ plan.price }}
+          {% endif %}
+          <span class="billing-cycle">
+            {% if plan.billing_cycle == 'lifetime' %}
+              one-time
+            {% elif plan.billing_cycle == 'yearly' %}
+              /year
+            {% else %}
+              /month
+            {% endif %}
+          </span>
+        </div>
+      </div>
+      
+      <div class="plan-features">
+        {{ plan.description|linebreaksbr }}
+      </div>
+      
+      {% if plan.price == 0 %}
+        <form method="post" action="{% url 'plans:create_checkout_session' plan.id memorial_id %}">
+          {% csrf_token %}
+          <button type="submit" class="plan-button free-button">
+            Select Free Plan
+            <i class="fas fa-check"></i>
+          </button>
+        </form>
+      {% else %}
+        <a href="{% url 'plans:create_checkout_session' plan.id memorial_id %}" class="plan-button {% if plan.is_popular %}popular-button{% endif %}">
+          Choose {{ plan.name }}
+          <i class="fas fa-chevron-right"></i>
+        </a>
+      {% endif %}
+    </div>
+    {% endfor %}
+  </div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/plans/choose_plan.css' %}">
+{% endblock %}

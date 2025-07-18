@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Payment Successful{% endblock %}
+
+{% block content %}
+{{ memorial_id }}
+<div class="payment-success-container">
+  <div class="payment-success-header text-center">
+    <div class="success-icon">
+      <svg xmlns="http://www.w3.org/2000/svg" width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#d4b483" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+        <polyline points="22 4 12 14.01 9 11.01"></polyline>
+      </svg>
+    </div>
+    <h1 class="payment-success-title">Payment Successful</h1>
+    <p class="payment-success-subtitle">Thank you for your purchase!</p>
+    <div class="header-divider"></div>
+  </div>
+
+  <div class="payment-success-content text-center">
+    <div class="success-message">
+      <p>Your plan has been successfully activated and is now ready to use.</p>
+    </div>
+    
+    <div class="action-buttons">
+      <a href="{% url 'memorials:account_profile' %}" class="action-button view-memorial">
+        My Account
+        <i class="fas fa-chevron-right"></i>
+      </a>
+      <a href="/" class="action-button return-home">
+        Return Home
+        <i class="fas fa-home"></i>
+      </a>
+    </div>
+    
+    <div class="support-message">
+      <p>Need help? <a href="/contact" class="support-link">Contact our support team</a></p>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/plans/success.css' %}">
+{% endblock %}

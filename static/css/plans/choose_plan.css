@@ -1,0 +1,230 @@
+   /* Base Styles */
+  .plans-container {
+    max-width: 1200px;
+    margin: 3rem auto;
+    padding: 0 1.5rem;
+    font-family: 'Lora', serif;
+  }
+  
+  /* Header Styles */
+  .plans-header {
+    margin-bottom: 4rem;
+  }
+  
+  .plans-title {
+    color: #3e2f1c;
+    font-size: 2.8rem;
+    margin-bottom: 1rem;
+    font-weight: 600;
+  }
+  
+  .plans-subtitle {
+    color: #6e4b2c;
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+  }
+  
+  .header-divider {
+    width: 100px;
+    height: 3px;
+    background: linear-gradient(to right, #d4b483, #f2e5c7);
+    margin: 0 auto;
+  }
+  
+  /* Plans Grid */
+  .plans-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+  }
+  
+  /* Plan Card */
+  .plan-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    padding: 2rem;
+    position: relative;
+    transition: all 0.3s ease;
+    border: 1px solid #f2e5c7;
+  }
+  
+  .plan-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0 15px 35px rgba(110, 75, 44, 0.15);
+  }
+  
+  .popular-plan {
+    border: 2px solid #d4b483;
+    background-color: rgba(255, 253, 208, 0.1);
+  }
+  
+  /* Popular Badge */
+  .popular-badge {
+    position: absolute;
+    top: -15px;
+    right: 20px;
+    background: #d4b483;
+    color: white;
+    padding: 0.5rem 1.5rem;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    box-shadow: 0 4px 8px rgba(212, 180, 131, 0.3);
+  }
+  
+  /* Plan Header */
+  .plan-header {
+    text-align: center;
+    margin-bottom: 2rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid #f2e5c7;
+  }
+  
+  .plan-name {
+    color: #3e2f1c;
+    font-size: 1.8rem;
+    margin-bottom: 1rem;
+  }
+  
+  .plan-price {
+    color: #6e4b2c;
+    font-size: 2.5rem;
+    font-weight: 700;
+  }
+  
+  .billing-cycle {
+    color: #a08b6c;
+    font-size: 1rem;
+    font-weight: 400;
+  }
+  
+  /* Plan Features */
+  .plan-features {
+    color: #3e2f1c;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    min-height: 150px;
+  }
+  
+  /* Plan Button */
+  .plan-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    border: 2px solid #d4b483;
+    color: #3e2f1c;
+    background: white;
+  }
+  
+  .plan-button:hover {
+    background: #d4b483;
+    color: white;
+    transform: translateY(-2px);
+  }
+  
+  .plan-button i {
+    margin-left: 0.5rem;
+    transition: transform 0.3s ease;
+  }
+  
+  .plan-button:hover i {
+    transform: translateX(3px);
+  }
+  
+  .popular-button {
+    background: #d4b483;
+    color: white;
+  }
+  
+  .popular-button:hover {
+    background: #c2a070;
+  }
+  
+  /* Footer */
+  .plan-footer {
+    text-align: center;
+    color: #6e4b2c;
+    font-size: 1.1rem;
+    margin-top: 2rem;
+  }
+  
+  .contact-link {
+    color: #d4b483;
+    font-weight: 500;
+    text-decoration: none;
+    border-bottom: 1px dashed #d4b483;
+  }
+  
+  .contact-link:hover {
+    color: #3e2f1c;
+    border-bottom-color: #3e2f1c;
+  }
+
+  /* Add to your CSS */
+.free-button {
+    background-color: #f8f9fa;
+    color: #6c757d;
+    border: 2px solid #dee2e6;
+}
+
+.free-button:hover {
+    background-color: #e9ecef;
+    color: #495057;
+}
+
+.plan-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #3e2f1c;
+}
+
+.plan-price .billing-cycle {
+    font-size: 1rem;
+    color: #6c757d;
+    font-weight: normal;
+}
+  
+  /* Responsive Adjustments */
+  @media (max-width: 768px) {
+    .plans-title {
+      font-size: 2.2rem;
+    }
+    
+    .plans-subtitle {
+      font-size: 1.1rem;
+    }
+    
+    .plans-grid {
+      grid-template-columns: 1fr;
+      max-width: 500px;
+      margin: 0 auto;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .plans-title {
+      font-size: 2rem;
+    }
+    
+    .plan-card {
+      padding: 1.5rem;
+    }
+    
+    .plan-name {
+      font-size: 1.6rem;
+    }
+    
+    .plan-price {
+      font-size: 2rem;
+    }
+  }
+

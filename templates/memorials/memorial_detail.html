@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}Memorial Details{% endblock %}
+
+{% block content %}
+{# ------------------------ Name and Dates Section ------------------------ #}
+  <div class="container text-center mt-0" style="bottom: 100px;">
+    <h1 class="fw-bold">
+      {{ memorial.first_name }} 
+      {% if memorial.middle_name %}{{ memorial.middle_name }} {% endif %}
+      {{ memorial.last_name }}
+    </h1>
+    <br>
+    <p class="dates">
+      {{ memorial.date_of_birth|date:"F j, Y" }} - {{ memorial.date_of_death|date:"F j, Y" }}
+    </p>
+  </div>
+{% endblock %}
+
