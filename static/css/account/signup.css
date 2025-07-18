@@ -1,0 +1,54 @@
+/* ===================== */
+/* SIGNUP-SPECIFIC STYLES */
+/* ===================== */
+
+/* Password requirements indicator */
+.password-requirements {
+    font-size: 0.85rem;
+    color: #6c757d;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+}
+
+/* Terms checkbox styling */
+#id_terms {
+    margin-right: 8px;
+}
+
+/* Terms link styling */
+.form-check-label a {
+    color: #d96e2b;
+    font-weight: 500;
+}
+
+/* Password match indicator */
+.password-match {
+    font-size: 0.85rem;
+    margin-top: -0.5rem;
+    margin-bottom: 1rem;
+    display: none;
+}
+
+.password-match.valid {
+    color: #28a745;
+    display: block;
+}
+
+.password-match.invalid {
+    color: #dc3545;
+    display: block;
+}
+
+/* ===================== */
+/* ANIMATIONS            */
+/* ===================== */
+
+/* Loading animation for form submission */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.form-container {
+    animation: fadeIn 0.4s ease-out forwards;
+}
