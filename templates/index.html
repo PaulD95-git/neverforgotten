@@ -1,0 +1,163 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {# ===================== META TAGS & SEO ===================== #}
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  {# ----- Title ----- #}
+  <title>NeverForgotten - Create a Memorial Page for Loved Ones</title>
+
+  {# ----- Meta SEO ----- #}
+  <meta name="description" content="
+    NeverForgotten helps you honor loved ones by creating beautiful online memorial pages. 
+    Share memories, photos, music, and tributes in one place.
+  ">
+  <meta name="keywords" content="
+    online memorial, tribute, obituary, remember loved ones, 
+    create memorial page, digital legacy
+  ">
+  <meta name="author" content="NeverForgotten Team">
+  <meta name="robots" content="index, follow">
+
+  {# ----- Open Graph (Facebook, LinkedIn) ----- #}
+  <meta property="og:title" content="NeverForgotten - Create a Memorial Page for Loved Ones">
+  <meta property="og:description" content="
+    Easily create and share memorial pages to remember loved ones. 
+    Add stories, photos, music, and tributes.
+  ">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="{{ request.build_absolute_uri }}">
+  
+
+  {# ----- Twitter Card ----- #}
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="NeverForgotten - Create a Memorial Page">
+    <meta name="twitter:description" content="
+        Create beautiful memorial pages to honor and remember loved ones. 
+        Share memories, photos, and tributes in one place.
+
+  {# ----- Canonical URL ----- #}
+  <link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+  {# ----- Favicon ----- #}
+  <link rel="icon" href="{% static 'images/favicon.ico' %}" type="image/x-icon">
+
+  {# ===================== CSS & FONTS ===================== #}
+  {# ----- Font Awesome ----- #}
+  <script src="https://kit.fontawesome.com/de0549e373.js" crossorigin="anonymous"></script>
+
+  {# ----- Bootstrap CSS ----- #}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+
+  <link rel="stylesheet" href="{% static 'css/index.css' %}">
+
+ 
+
+  {# ----- Swiper CSS ----- #}
+  <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+</head>
+
+<body class="body-background">
+  <div class="background-wrapper">
+    {# ===================== MESSAGES ===================== #}
+    {% if messages %}
+      <div class="message-container">
+        {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+
+    {# ===================== HEADER ===================== #}
+    <header class="header">
+      <div class="container text-center bg-cream rounded p-4">
+        <input type="checkbox" id="check">
+        <label for="check" class="checkbtn" aria-label="Toggle menu">
+          <i class="fas fa-bars"></i>
+        </label>
+        
+        <h1 class="logo text-uppercase">NeverForgotten</h1>
+        
+        <ul class="navbar-links list-inline m-0">
+          <li class="list-inline-item mx-3"><a href="">About</a></li>
+          <li class="list-inline-item mx-3"><a href="">Create Memorial</a></li>
+          <li class="list-inline-item mx-3"><a href="">Browse Memorials</a></li>
+          <li class="list-inline-item mx-3"><a href="">Plans</a></li>
+          <li class="list-inline-item mx-3"><a href="">Contact</a></li>
+
+          {% if user.is_authenticated %}
+            <li class="list-inline-item mx-3"><a href="">My Account</a></li>
+          {% else %}
+            <li class="list-inline-item mx-3"><a href="{% url 'account_login' %}">Sign Up/Login</a></li>
+          {% endif %}
+        </ul>
+      </div>
+    </header>
+
+    {# ===================== MAIN CONTENT ===================== #}
+    <main>
+      {# ----- Hero Section ----- #}
+      <section class="hero-section d-flex justify-content-center align-items-center text-center">
+        <div class="hero-overlay container p-5 rounded">
+          <h1 class="display-5 fw-bold mb-4">A Memorial That Is Just a Scan Away</h1>
+          <p>“Create a tribute that friends and family can find with a simple scan.”</p>
+
+          <div class="d-flex flex-column flex-sm-row justify-content-center gap-3">
+            <a href="" class="btn btn-primary btn-lg px-4">
+              Create a Memorial
+            </a>
+            <a href="" class="btn btn-outline-secondary btn-lg px-4">
+              Browse Memorials
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+
+
+
+
+    {# ===================== FOOTER ===================== #}
+    <footer class="bg-cream text-center text-muted py-4 border-top" role="contentinfo">
+      <div class="container">
+        <p>&copy; {{ now.year }} NeverForgotten. All rights reserved.</p>
+        <p>
+          <a href="" class="text-decoration-none text-muted me-3">Privacy Policy</a>
+          <a href="" class="text-decoration-none text-muted">Terms of Service</a>
+        </p>
+      </div>
+    </footer>
+  </div>
+
+  {# ===================== JAVASCRIPT ===================== #}
+  {# ----- Bootstrap Bundle JS ----- #}
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+  {# ----- Slide-out Nav Script ----- #}
+  <script>
+    const hamburger = document.querySelector(".hamburger");
+    const navMenu = document.querySelector(".nav-menu");
+
+    hamburger?.addEventListener("click", mobileMenu);
+
+    function mobileMenu() {
+      hamburger.classList.toggle("active");
+      navMenu.classList.toggle("active");
+    }
+
+    const navLink = document.querySelectorAll(".nav-link");
+    navLink.forEach(n => n.addEventListener("click", closeMenu));
+
+    function closeMenu() {
+      hamburger.classList.remove("active");
+      navMenu.classList.remove("active");
+    }
+  </script>
+</body>
+</html>
