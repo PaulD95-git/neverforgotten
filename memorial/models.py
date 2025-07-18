@@ -6,6 +6,7 @@ from cloudinary.uploader import upload
 from cloudinary_storage.storage import MediaCloudinaryStorage
 import qrcode
 from io import BytesIO
+from plans.models import Plan
 
 
 class Memorial(models.Model):
@@ -63,6 +64,10 @@ class Memorial(models.Model):
         null=True,
         storage=MediaCloudinaryStorage()
     )
+
+    # Subscription fields
+    plan = models.ForeignKey(Plan, on_delete=models.SET_NULL, null=True, blank=True)
+    stripe_subscription_id = models.CharField(max_length=255, blank=True, null=True)
 
     def save(self, *args, **kwargs):
         """Custom save to handle QR code generation."""

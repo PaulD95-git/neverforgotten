@@ -1,41 +1,31 @@
-# Django core imports
-from django.shortcuts import (
-    render, get_object_or_404, redirect, reverse
-)
-from django.views.generic import (
-    ListView, CreateView, UpdateView, FormView, DetailView
-)
-from django.contrib.auth.mixins import (
-    LoginRequiredMixin, UserPassesTestMixin
-)
-from django.views.decorators.http import require_http_methods
-from django.db import transaction
-from django.urls import reverse_lazy
-from django.contrib import messages
-from django.http import JsonResponse
-from django.views.decorators.csrf import csrf_protect, csrf_exempt
-from django.views.decorators.http import require_POST
-from django.contrib.auth.decorators import login_required
+# Standard Library
+from datetime import datetime
+from urllib.parse import urlencode
+import json
 
-
-from django.contrib.auth.models import User
+# Django Core
 from django import forms
+from django.conf import settings
+from django.contrib import messages
+from django.contrib.auth import logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.contrib.auth.models import User
+from django.shortcuts import render, get_object_or_404, redirect, reverse
+from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_protect
+from django.views.generic import ListView, CreateView, UpdateView, FormView
 
+# Third Party
 
-# Third-party imports
-
-import cloudinary
 import stripe
 
 
-# Local imports
+# Local Apps
 from plans.models import Plan
-from .models import (
-    Memorial,
-)
-from .forms import (
-    MemorialForm, 
-)
+from .forms import MemorialForm
+from .models import Memorial
+
 
 # ---------------------------
 # Basic Views
@@ -207,3 +197,47 @@ class UpgradeMemorialView(LoginRequiredMixin, FormView):
         context = super().get_context_data(**kwargs)
         context['memorial'] = self.memorial
         return context
+
+
+
+# memorial/views.py (add these at the bottom)
+
+class MyAccountView(LoginRequiredMixin, ListView):
+    """View showing user's memorials"""
+    model = Memorial
+    template_name = 'account/my_account.html'
+    context_object_name = 'memorials'
+
+    def get_queryset(self):
+        """Filter memorials to only those owned by current user"""
+        return Memorial.objects.filter(user=self.request.user)
+
+    def get_context_data(self, **kwargs):
+        """Add free plan info to context"""
+        context = super().get_context_data(**kwargs)
+        free_plan = Plan.objects.filter(name__iexact='free').first()
+        context['plans_free_plan'] = free_plan
+        return context
+
+class UserEditForm(forms.ModelForm):
+    """Form for editing user profile information"""
+    class Meta:
+        model = User
+        fields = ['first_name', 'last_name', 'email']
+
+@login_required
+def edit_profile(request):
+    """View for editing user profile"""
+    if request.method == 'POST':
+        form = UserEditForm(request.POST, instance=request.user)
+        if form.is_valid():
+            form.save()
+            return redirect('memorials:account_profile')  # Fixed URL name
+    else:
+        form = UserEditForm(instance=request.user)
+    
+    return render(
+        request,
+        'account/edit_profile.html',
+        {'form': form}
+    )

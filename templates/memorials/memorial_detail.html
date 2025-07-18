@@ -1,21 +1,194 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
-{% load i18n %}
 
-{% block title %}Memorial Details{% endblock %}
+{% block extra_head %}
+  <!-- Memorial edit page specific CSS -->
+  <link href="{% static 'css/memorial_edit.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}Edit Memorial - {{ memorial.first_name }} {{ memorial.last_name }}{% endblock %}
 
 {% block content %}
-{# ------------------------ Name and Dates Section ------------------------ #}
+detail
+  <!-- Banner Container -->
+  <div class="banner" style="overflow: hidden;">
+    {% if memorial.banner_type == 'image' and memorial.banner_value %}
+      <div id="memorialBanner" 
+           class="banner banner-image"
+           data-memorial-id="{{ memorial.pk }}"
+           style="background-image: url('{% static memorial.banner_value %}'); width: 100%;">
+    {% elif memorial.banner_type == 'color' and memorial.banner_value %}
+      <div id="memorialBanner" 
+           class="banner banner-color"
+           data-memorial-id="{{ memorial.pk }}"
+           style="background-color: {{ memorial.banner_value }};">
+    {% else %}
+      <div id="memorialBanner" 
+           class="banner banner-default"
+           data-memorial-id="{{ memorial.pk }}">
+    {% endif %}
+    </div>
+
+    {% if memorial.plan and memorial.plan.name|lower != "free" %}
+      <!-- Paid plan: enabled Change Banner button -->
+      <button id="changeBannerBtn" class="banner-change-btn">
+        <i class="fas fa-image"></i> Change Banner
+      </button>
+    {% else %}
+      <!-- Free plan: disabled banner change button -->
+      <div style="position: absolute; top: 10px; left: 10px; z-index: 10; 
+                  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
+        <button class="banner-change-btn disabled" disabled 
+                title="Upgrade to change banner" style="position: static;">
+          <i class="fas fa-lock"></i> Change Banner (Locked)
+        </button>
+        <a href="{% url 'plans:choose_plan' memorial.id %}" class="btn btn-sm btn-warning">
+          <i class="fas fa-star"></i> Unlock Premium
+        </a>
+      </div>
+    {% endif %}
+
+    <!-- Banner selection modal -->
+    <div id="bannerSelectionModal" class="banner-modal" style="display: none;">
+      <p>Select a banner:</p>
+      <div class="banner-options">
+        <!-- Color option -->
+        <button class="banner-option" data-type="color" data-value="#f7e8c9">
+          Default Color
+        </button>
+
+        <img src="{% static 'banners/sunset.jpg' %}"
+             class="banner-option"
+             data-type="image"
+             data-value="banners/sunset.jpg"
+             alt="Sunset">
+
+        <img src="{% static 'banners/sunflower.jpg' %}"
+             class="banner-option"
+             data-type="image"
+             data-value="banners/sunflower.jpg"
+             alt="Sunflower">
+      </div>
+      <button id="closeBannerModal">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Profile Picture Upload Form -->
+  <form method="POST" enctype="multipart/form-data" 
+        id="pfpUploadForm" action="{% url 'memorials:upload_profile_picture' memorial.pk %}">
+    {% csrf_token %}
+    <div class="profile-pic-wrapper upload-wrapper" title="Click to change profile picture">
+      {% if memorial.profile_public_id %}
+        <img src="https://res.cloudinary.com/neverforgotten/image/upload/{{ memorial.profile_public_id }}.png?{% now 'U' %}" 
+             alt="Profile Picture of {{ memorial.first_name }}" 
+             data-original-src="https://res.cloudinary.com/neverforgotten/image/upload/{{ memorial.profile_public_id }}.png">
+      {% else %}
+        <img src="{% static 'images/nf.png' %}" 
+             alt="Default memorial image" 
+             data-original-src="{% static 'images/nf.png' %}">
+      {% endif %}
+      <input type="file" name="profile_picture" id="profilePictureInput" 
+             accept="image/*" style="display:none;">
+      <div class="upload-icon"><i class="fas fa-edit"></i></div>
+    </div>
+  </form>
+
+  <!-- Memorial Name and Dates Section -->
   <div class="container text-center mt-0" style="bottom: 100px;">
-    <h1 class="fw-bold">
+    <!-- Editable Name with Modal -->
+    <h1 class="fw-bold editable-field" id="editable-name" 
+        data-bs-toggle="modal" data-bs-target="#nameEditModal">
       {{ memorial.first_name }} 
       {% if memorial.middle_name %}{{ memorial.middle_name }} {% endif %}
       {{ memorial.last_name }}
+      <i class="fas fa-edit ms-2" style="font-size: 0.6em; opacity: 0.7;"></i>
     </h1>
     <br>
-    <p class="dates">
+    <!-- Editable Dates with Modal -->
+    <p class="dates editable-field" id="editable-dates" 
+       data-bs-toggle="modal" data-bs-target="#datesEditModal">
       {{ memorial.date_of_birth|date:"F j, Y" }} - {{ memorial.date_of_death|date:"F j, Y" }}
+      <i class="fas fa-edit ms-2" style="font-size: 0.6em; opacity: 0.7;"></i>
     </p>
   </div>
-{% endblock %}
 
+  <!-- Name Edit Modal -->
+  <div class="modal fade" id="nameEditModal" tabindex="-1" 
+       aria-labelledby="nameEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="name-edit-form" method="POST" 
+              action="{% url 'memorials:memorial_edit' memorial.pk %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="nameEditModalLabel">Edit Name</h5>
+            <button type="button" class="btn-close" 
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="text" name="first_name" value="{{ memorial.first_name }}" 
+                   class="form-control mb-2" required>
+            <input type="text" name="middle_name" 
+                   value="{{ memorial.middle_name|default:'' }}" 
+                   class="form-control mb-2">
+            <input type="text" name="last_name" value="{{ memorial.last_name }}" 
+                   class="form-control mb-2" required>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" 
+                    data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dates Edit Modal -->
+  <div class="modal fade" id="datesEditModal" tabindex="-1" 
+       aria-labelledby="datesEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="dates-edit-form" method="POST" 
+              action="{% url 'memorials:memorial_edit' memorial.pk %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="datesEditModalLabel">Edit Dates</h5>
+            <button type="button" class="btn-close" 
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex justify-content-center align-items-center gap-2">
+            <input type="date" name="date_of_birth" 
+                   value="{{ memorial.date_of_birth|date:'Y-m-d' }}" 
+                   class="form-control" required>
+            <span>-</span>
+            <input type="date" name="date_of_death" 
+                   value="{{ memorial.date_of_death|date:'Y-m-d' }}" 
+                   class="form-control" required>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" 
+                    data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Share Button -->
+  <div class="d-flex justify-content-center my-4">
+    <button id="shareButton" class="btn btn-outline-primary share-button">
+      <i class="fas fa-share-alt me-2"></i> Share Memorial Page
+    </button>
+  </div>
+
+  <!-- View Memorial Button (for owner) -->
+  {% if request.user == memorial.user %}
+    <div class="d-flex justify-content-center mb-4">
+      <a href="{% url 'memorials:memorial_detail' pk=memorial.pk %}" 
+         class="view-btn btn btn-primary">
+        <i class="fas fa-edit"></i> View Memorial
+      </a>
+    </div>
+  {% endif %}

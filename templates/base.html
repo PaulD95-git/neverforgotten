@@ -127,7 +127,7 @@
       <li><a href="">{% trans "Contact" %}</a></li>
       
       {% if user.is_authenticated %}
-        <li><a href="">{% trans "My Account" %}</a></li>
+        <li><a href="{% url 'memorials:account_profile' %}">{% trans "My Account" %}</a></li>
       {% else %}
         <li><a href="{% url 'account_login' %}">{% trans "Login/Signup" %}</a></li>
       {% endif %}

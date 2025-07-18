@@ -1,20 +1,74 @@
-{% extends "base.html" %}
+{% extends 'base.html' %}
 {% load static %}
-{% load i18n %}
 
-{% block title %}Memorial Details{% endblock %}
+{% block extra_head %}
+  <!-- Memorial edit page specific CSS -->
+  <link href="{% static 'css/memorial_edit.css' %}" rel="stylesheet">
+{% endblock %}
+
+{% block title %}Edit Memorial - {{ memorial.first_name }} {{ memorial.last_name }}{% endblock %}
 
 {% block content %}
-{# ------------------------ Name and Dates Section ------------------------ #}
-  <div class="container text-center mt-0" style="bottom: 100px;">
-    <h1 class="fw-bold">
-      {{ memorial.first_name }} 
-      {% if memorial.middle_name %}{{ memorial.middle_name }} {% endif %}
-      {{ memorial.last_name }}
-    </h1>
-    <br>
-    <p class="dates">
-      {{ memorial.date_of_birth|date:"F j, Y" }} - {{ memorial.date_of_death|date:"F j, Y" }}
-    </p>
+  <!-- Banner Container -->
+  <div class="banner" style="overflow: hidden;">
+    {% if memorial.banner_type == 'image' and memorial.banner_value %}
+      <div id="memorialBanner" 
+           class="banner banner-image"
+           data-memorial-id="{{ memorial.pk }}"
+           style="background-image: url('{% static memorial.banner_value %}'); width: 100%;">
+    {% elif memorial.banner_type == 'color' and memorial.banner_value %}
+      <div id="memorialBanner" 
+           class="banner banner-color"
+           data-memorial-id="{{ memorial.pk }}"
+           style="background-color: {{ memorial.banner_value }};">
+    {% else %}
+      <div id="memorialBanner" 
+           class="banner banner-default"
+           data-memorial-id="{{ memorial.pk }}">
+    {% endif %}
+    </div>
+
+    {% if memorial.plan and memorial.plan.name|lower != "free" %}
+      <!-- Paid plan: enabled Change Banner button -->
+      <button id="changeBannerBtn" class="banner-change-btn">
+        <i class="fas fa-image"></i> Change Banner
+      </button>
+    {% else %}
+      <!-- Free plan: disabled banner change button -->
+      <div style="position: absolute; top: 10px; left: 10px; z-index: 10; 
+                  display: flex; flex-direction: column; align-items: flex-start; gap: 6px;">
+        <button class="banner-change-btn disabled" disabled 
+                title="Upgrade to change banner" style="position: static;">
+          <i class="fas fa-lock"></i> Change Banner (Locked)
+        </button>
+        <a href="{% url 'plans:choose_plan' memorial.id %}" class="btn btn-sm btn-warning">
+          <i class="fas fa-star"></i> Unlock Premium
+        </a>
+      </div>
+    {% endif %}
+
+    <!-- Banner selection modal -->
+    <div id="bannerSelectionModal" class="banner-modal" style="display: none;">
+      <p>Select a banner:</p>
+      <div class="banner-options">
+        <!-- Color option -->
+        <button class="banner-option" data-type="color" data-value="#f7e8c9">
+          Default Color
+        </button>
+
+        <img src="{% static 'banners/sunset.jpg' %}"
+             class="banner-option"
+             data-type="image"
+             data-value="banners/sunset.jpg"
+             alt="Sunset">
+
+        <img src="{% static 'banners/sunflower.jpg' %}"
+             class="banner-option"
+             data-type="image"
+             data-value="banners/sunflower.jpg"
+             alt="Sunflower">
+      </div>
+      <button id="closeBannerModal">Cancel</button>
+    </div>
   </div>
-{% endblock %}
+  {% endblock %}

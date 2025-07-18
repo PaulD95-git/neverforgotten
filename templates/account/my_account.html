@@ -1,0 +1,121 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+
+<div class="account-container">
+
+  <!-- My Account Header -->
+  <div class="account-header">
+    <h2 class="account-title">My Account</h2>
+    <p class="account-subtitle">Manage your memorials and subscription plans</p>
+    <div class="header-divider"></div>
+  </div>
+
+  <!-- Account Actions Section -->
+  <div class="account-actions">
+    <a href="{% url 'memorials:edit_profile' %}" class="account-action-button edit-profile-button">
+      <i class="fas fa-user-edit"></i> Edit Profile
+    </a>
+    <form method="post" action="" class="account-action-form">
+      {% csrf_token %}
+      <button type="submit" class="account-action-button logout-button">
+        <i class="fas fa-sign-out-alt"></i> Logout
+      </button>
+    </form>
+  </div>
+
+  <!-- Memorial Section -->
+  <h3 class="section-title">My Memorials</h3>
+
+  {% if memorials %}
+    <div class="memorials-grid">
+      {% for memorial in memorials %}
+        <div class="memorial-card">
+          <div class="memorial-info">
+            <h4 class="memorial-name">
+              {{ memorial.first_name }} {{ memorial.last_name }}
+            </h4>
+            <div class="memorial-meta">
+              <span class="plan-badge {{ memorial.plan.name|lower|default:'free' }}">
+                {{ memorial.plan.name|default:"Free" }} Plan
+              </span>
+              <a href="{% url 'memorials:memorial_detail' memorial.pk %}" class="view-button">
+                <i class="fas fa-eye"></i> View
+              </a>
+            </div>
+          </div>
+
+          <div class="memorial-actions">
+            <a href="{% url 'memorials:memorial_edit' memorial.pk %}" class="action-button edit-button">
+              <i class="fas fa-edit"></i> Edit
+            </a>
+
+            {% if memorial.plan and memorial.plan.name|lower != 'free' %}
+              <form method="post" action="{% url 'plans:cancel_plan' memorial.pk %}">
+                {% csrf_token %}
+                <button type="submit" class="action-button cancel-button">
+                  <i class="fas fa-times-circle"></i> Cancel
+                </button>
+              </form>
+            {% else %}
+              <a href="{% url 'plans:choose_plan' memorial.id %}" class="action-button upgrade-button">
+                <i class="fas fa-arrow-up"></i> Upgrade
+              </a>
+            {% endif %}
+
+            <!-- Updated Delete Button to Trigger Modal -->
+            <button type="button" class="action-button delete-button" data-bs-toggle="modal" data-bs-target="#deleteMemorialModal{{ memorial.pk }}">
+              <i class="fas fa-trash-alt"></i> Delete
+            </button>
+          </div>
+        </div>
+
+        <!-- Delete Confirmation Modal for Each Memorial -->
+        <div class="modal fade" id="deleteMemorialModal{{ memorial.pk }}" tabindex="-1" aria-labelledby="deleteMemorialModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteMemorialModalLabel">Confirm Deletion</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <p>Are you sure you want to delete the memorial for {{ memorial.first_name }} {{ memorial.last_name }}?</p>
+                {% if memorial.stripe_subscription_id %}
+                <div class="alert alert-warning">
+                  <i class="fas fa-exclamation-triangle me-2"></i>
+                  Your subscription will be automatically terminated and you won't be charged again.
+                </div>
+                {% endif %}
+                <p class="text-danger"><strong>This action cannot be undone.</strong></p>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                <form method="POST" action="{% url 'memorials:memorial_delete' memorial.pk %}" class="d-inline">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-danger">
+                    <i class="fas fa-trash-alt me-1"></i> Delete Memorial
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <i class="fas fa-cloud empty-icon"></i>
+      <p class="empty-text">You haven't created any memorials yet.</p>
+      <a href="{% url 'memorials:memorial_create' %}" class="create-button">
+        <i class="fas fa-plus-circle"></i> Create Memorial
+      </a>
+    </div>
+  {% endif %}
+</div>
+
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/account/my_account.css' %}">
+{% endblock %}
