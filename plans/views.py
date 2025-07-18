@@ -12,7 +12,6 @@ from cloudinary.uploader import destroy
 from urllib.parse import urlparse
 import re
 
-
 logger = logging.getLogger(__name__)
 
 stripe.api_key = settings.STRIPE_SECRET_KEY

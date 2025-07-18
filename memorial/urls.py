@@ -31,4 +31,5 @@ urlpatterns = [
 
     # Upgrade Memorial
     path('<int:pk>/upgrade/', UpgradeMemorialView.as_view(), name='upgrade'),
+
 ]
