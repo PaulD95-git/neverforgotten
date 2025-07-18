@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+{% load i18n %}
+{% load static %}
+{% block title %}Create Memorial{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/memorials/memorial_form.css' %}">
+{% endblock %}
+
+
+{% block content %}
+<div class="form-wrapper">
+  <div class="form-container">
+    <h2>Create Memorial</h2>
+    <form method="post">
+      {% csrf_token %}
+
+      <div class="form-group">
+        <label for="id_first_name">First Name</label>
+        <input
+          type="text"
+          name="first_name"
+          id="id_first_name"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="id_middle_name">Middle Name</label>
+        <input
+          type="text"
+          name="middle_name"
+          id="id_middle_name"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="id_last_name">Last Name</label>
+        <input
+          type="text"
+          name="last_name"
+          id="id_last_name"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="dob">Date of Birth</label>
+        <input
+          type="date"
+          id="dob"
+          name="date_of_birth"
+          required
+          min="1900-01-01"
+          max="{{ today|default:'2025-12-31' }}"
+          step="1"
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="dod">Date of Death</label>
+        <input
+          type="date"
+          id="dod"
+          name="date_of_death"
+          required
+          min="1900-01-01"
+          step="1"
+        />
+      </div>
+
+      <button type="submit" class="btn">Create Memorial</button>
+      {% if error_message %}
+        <p class="error-message">{{ error_message }}</p>
+      {% endif %}
+    </form>
+  </div>
+</div>
+
+<script>
+  const dobInput = document.getElementById("dob");
+  const dodInput = document.getElementById("dod");
+
+  dobInput.addEventListener("change", function () {
+    if (dobInput.value) {
+      dodInput.min = dobInput.value;
+    }
+  });
+</script>
+{% endblock %}
+
+
+
+
+
+
