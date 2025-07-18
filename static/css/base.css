@@ -1,0 +1,183 @@
+/* ===================== */
+/* GOOGLE FONTS IMPORT    */
+/* ===================== */
+@import url('https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,700;1,400&family=Montserrat:wght@400;500;600&display=swap');
+
+/* ===================== */
+/* BASE STYLES           */
+/* ===================== */
+body {
+    background-color: rgba(255, 249, 230, 0.95);
+    color: #3e2f1c;
+    font-family: 'Lora', serif;
+    min-height: 100vh;
+    /* Add padding to prevent content from being hidden behind navbar */
+    padding-top: 60px;
+}
+
+/* ===================== */
+/* LAYOUT STRUCTURE       */
+/* ===================== */
+main {
+    /* Removed margin-top since we added body padding */
+    margin-top: 0;
+    min-height: calc(100vh - 60px);
+    position: relative;
+}
+
+.content-container {
+    min-height: calc(100vh - 120px);
+    display: flex;
+    flex-direction: column;
+}
+
+/* ===================== */
+/* NAVBAR COMPONENT       */
+/* ===================== */
+body > nav.main-navbar {
+    background: rgba(255, 249, 230, 0.95);
+    height: 60px;
+    width: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 1000;
+    border-bottom: 1px solid #f2e5c7;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+}
+
+/* Navbar logo styles */
+body > nav.main-navbar > .logo {
+    color: #3e2f1c;
+    font-family: "Lora", serif;
+    font-size: 1.3rem;
+    font-weight: bold;
+    line-height: 60px;
+    padding: 0 20px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    float: left;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+body > nav.main-navbar > .logo:hover {
+    color: #5a4a30;
+    transform: scale(1.03);
+}
+
+/* Navbar links container */
+body > nav.main-navbar > .navbar-links {
+    text-align: center;
+}
+
+/* Individual navbar links */
+body > nav.main-navbar > .navbar-links li {
+    display: inline-block;
+    line-height: 60px;
+    margin: 0 5px;
+}
+
+body > nav.main-navbar > .navbar-links li a {
+    color: #3e2f1c;
+    font-size: 1.2rem;
+    font-weight: 500;
+    padding: 7px 10px;
+    border-radius: 3px;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+body > nav.main-navbar > .navbar-links li a:hover,
+body > nav.main-navbar > .navbar-links li a.active {
+    background: rgba(62, 47, 28, 0.08);
+    color: #1f1a10;
+}
+
+/* Hamburger menu button (mobile) */
+body > nav.main-navbar > .checkbtn {
+    font-size: 1.3rem;
+    color: #3e2f1c;
+    float: right;
+    line-height: 60px;
+    margin-right: 20px;
+    cursor: pointer;
+    display: none;
+}
+
+/* Hidden checkbox for mobile menu toggle */
+body > nav.main-navbar > #check {
+    display: none;
+}
+
+/* Mobile menu overlay */
+body > nav.main-navbar + .menu-overlay {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    width: 100%;
+    height: calc(100vh - 60px);
+    background: rgba(0, 0, 0, 0.3);
+    z-index: 998;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+}
+
+/* ===================== */
+/* RESPONSIVE BREAKPOINTS */
+/* ===================== */
+
+/* Tablet and below (1720px) */
+@media (max-width: 1420px) {
+    body > nav.main-navbar > .checkbtn {
+        display: block;
+    }
+    
+    body > nav.main-navbar > .navbar-links {
+        position: fixed;
+        width: 100%;
+        height: calc(100vh - 60px);
+        background: rgba(255, 249, 230, 0.98);
+        top: 60px;
+        left: -100%;
+        text-align: center;
+        transition: all 0.5s ease;
+        z-index: 999;
+        padding-top: 20px;
+    }
+    
+    body > nav.main-navbar > .navbar-links li {
+        display: block;
+        margin: 20px 0;
+        line-height: 40px;
+    }
+    
+    body > nav.main-navbar > .navbar-links li a {
+        font-size: 1.5rem;
+        padding: 10px 20px;
+        text-decoration: underline;
+    }
+    
+    /* Show menu when checkbox is checked */
+    body > nav.main-navbar > #check:checked ~ .navbar-links {
+        left: 0;
+    }
+    
+    body > nav.main-navbar > #check:checked ~ .menu-overlay {
+        opacity: 1;
+        visibility: visible;
+    }
+}
+
+/* Mobile devices (500px) */
+@media (max-width: 500px) {
+    body > nav.main-navbar > .logo {
+        font-size: 1.1rem;
+        padding-left: 15px;
+    }
+    
+    body > nav.main-navbar > .checkbtn {
+        margin-right: 15px;
+        font-size: 1.2rem;
+    }
+}

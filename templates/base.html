@@ -1,0 +1,167 @@
+{% load static %}
+{% load i18n %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  {# ===================== FAVICONS & APPLE TOUCH ICONS ===================== #}
+  {# ===================== META TAGS & SEO ===================== #}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  {# ----- Title ----- #}
+  <title>
+    {% block title %}
+      Create Beautiful Memorials & Tribute Pages for Loved Ones | NeverForgotten
+    {% endblock %}
+  </title>
+
+  {# ----- Meta Description ----- #}
+  <meta name="description" content="
+    {% block description %}
+      Create lasting online memorials and tribute pages to honor your loved ones. 
+      Easy to use, beautiful templates, and heartfelt sharing.
+    {% endblock %}
+  " />
+
+  {# ----- Keywords ----- #}
+  <meta name="keywords" content="
+    memorial, online memorial, tribute, remembrance, obituary, 
+    tribute page, memorial website, loved ones, memorial pages, grief support
+  " />
+
+  <meta name="author" content="NeverForgotten" />
+
+  {# ----- Canonical URL ----- #}
+  <link rel="canonical" href="{{ request.scheme }}://{{ request.get_host }}{{ request.path }}" />
+
+  {# ===================== SOCIAL MEDIA META ===================== #}
+  {# ----- Open Graph / Facebook ----- #}
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Create Beautiful Memorials & Tribute Pages for Loved Ones" />
+  <meta property="og:description" content="
+    Create lasting online memorials and tribute pages to honor your loved ones. 
+    Easy to use, beautiful templates, and heartfelt sharing.
+  " />
+  <meta property="og:url" content="{{ request.build_absolute_uri }}" />
+  <meta property="og:site_name" content="NeverForgotten" />
+  
+
+  {# ----- Twitter Card ----- #}
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="
+    Create Beautiful Memorials & Tribute Pages for Loved Ones | NeverForgotten
+  " />
+  <meta name="twitter:description" content="
+    Create lasting online memorials and tribute pages to honor your loved ones. 
+    Easy to use, beautiful templates, and heartfelt sharing.
+  " />
+  
+
+  {# ===================== STRUCTURED DATA ===================== #}
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      "name": "NeverForgotten",
+      "url": "{{ request.build_absolute_uri|slice:':-1' }}",
+      "potentialAction": {
+        "@type": "SearchAction",
+        "target": "{{ request.build_absolute_uri }}search/?q={search_term_string}",
+        "query-input": "required name=search_term_string"
+      }
+    }
+  </script>
+
+  {# ===================== SCRIPTS & STYLES ===================== #}
+  {# ----- Document Ready Check ----- #}
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      window.domReady = true;
+    });
+  </script>
+
+  {# ----- Bootstrap ----- #}
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+  {# ----- Fonts & Icons ----- #}
+  <link href="https://fonts.googleapis.com/css2?family=Lora&display=swap" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/de0549e373.js" crossorigin="anonymous"></script>
+
+  {# ----- Custom CSS ----- #}
+  <link rel="stylesheet" href="{% static 'css/base.css' %}">
+</head>
+
+<body>
+  {# ===================== MESSAGES ===================== #}
+  {% if messages %}
+    <div class="container mt-3">
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  {# ===================== NAVIGATION ===================== #}
+  <nav class="main-navbar" aria-label="Main navigation">
+    {# Mobile menu toggle #}
+    <input type="checkbox" id="check">
+    <label for="check" class="checkbtn" aria-label="Toggle menu">
+      <i class="fas fa-bars"></i>
+    </label>
+    
+    {# Logo #}
+    <a href="" class="logo">NeverForgotten</a>
+    
+    {# Navigation links #}
+    <ul class="navbar-links">
+      <li><a href="">{% trans "About" %}</a></li>
+      <li><a href="">{% trans "Home" %}</a></li>
+      <li><a href="">{% trans "Create Memorial" %}</a></li>
+      <li><a href="">{% trans "Browse Memorials" %}</a></li>
+      <li><a href="">{% trans "Plans" %}</a></li>
+      <li><a href="">{% trans "Contact" %}</a></li>
+      
+      {% if user.is_authenticated %}
+        <li><a href="">{% trans "My Account" %}</a></li>
+      {% else %}
+        <li><a href="{% url 'account_login' %}">{% trans "Login/Signup" %}</a></li>
+      {% endif %}
+    </ul>
+  </nav>
+  
+
+
+  {# ===================== MAIN CONTENT ===================== #}
+  <main role="main">
+    <div>
+      {% block content %}{% endblock %}
+    </div>
+  </main>
+
+  {# ===================== FOOTER ===================== #}
+  <footer class="bg-cream text-center text-muted py-4 border-top" role="contentinfo">
+    <div class="container">
+      <p>&copy; {{ now.year }} NeverForgotten. All rights reserved.</p>
+      <p>
+        <a href="" class="text-decoration-none text-muted me-3">Privacy Policy</a>
+        <a href="" class="text-decoration-none text-muted">Terms of Service</a>
+      </p>
+    </div>
+  </footer>
+  
+  {# Click catcher to close menu when clicking outside #}
+  <div class="click-catcher d-none"></div>
+
+  {# ===================== EXTRA ASSETS ===================== #}
+  {% block extra_js %}
+  
+  {% endblock %}
+  
+  {% block extra_css %}{% endblock %}
+</body>
+</html>
