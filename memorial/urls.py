@@ -15,6 +15,11 @@ from .views import (
     update_dates,
     update_biography,
     update_quote,
+    delete_memorial,
+    create_tribute,
+    delete_tribute,
+    edit_tribute,
+    get_tributes,
 )
 
 app_name = 'memorials'
@@ -53,8 +58,7 @@ urlpatterns = [
         update_dates,
         name='update_dates',
     ),
-
-     path(
+    path(
         'memorials/<int:pk>/update-quote/',
         update_quote,
         name='update_quote',
@@ -63,6 +67,27 @@ urlpatterns = [
         'memorials/<int:pk>/update-biography/',
         update_biography,
         name='update_biography',
-    )
+    ),
+    # Tribute URLs
+    path(
+        'memorials/<int:pk>/tributes/create/',
+        create_tribute,
+        name='create_tribute',
+    ),
+    path(
+        'memorials/tributes/<int:pk>/edit/',
+        edit_tribute,
+        name='edit_tribute',
+    ),
+    path(
+        'memorials/tributes/<int:pk>/delete/',
+        delete_tribute,
+        name='delete_tribute',
+    ),
+    path(
+        'memorials/<int:pk>/tributes/',
+        get_tributes,
+        name='get_tributes',
+    ),
 
 ]

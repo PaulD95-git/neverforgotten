@@ -471,3 +471,158 @@ def update_biography(request, pk):
             'success': False,
             'error': str(e)
         }, status=400)
+    
+# ---------------------------
+# Tribute Views
+# ---------------------------
+
+@require_POST
+@login_required
+def create_tribute(request, pk):
+    """AJAX endpoint for creating tributes"""
+    memorial = get_object_or_404(Memorial, pk=pk)
+    
+    author_name = request.POST.get('author_name', '').strip()
+    message = request.POST.get('message', '').strip()
+
+    if not author_name:
+        return JsonResponse(
+            {'success': False, 'error': 'Name is required'},
+            status=400
+        )
+    if not message:
+        return JsonResponse(
+            {'success': False, 'error': 'Message is required'},
+            status=400
+        )
+    if len(message) > 2000:
+        return JsonResponse(
+            {'success': False, 'error': 'Message too long'},
+            status=400
+        )
+
+    try:
+        tribute = memorial.tributes.create(
+            user=request.user,
+            author_name=author_name,
+            message=message
+        )
+        
+        can_edit = (
+            request.user == memorial.user or
+            request.user == tribute.user
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'tribute': {
+                'id': tribute.id,
+                'author_name': tribute.author_name,
+                'message': tribute.message,
+                'created_at': tribute.created_at.strftime("%b %d, %Y")
+            },
+            'can_edit': can_edit
+        })
+
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=500)
+
+@require_POST
+@login_required
+def edit_tribute(request, pk):
+    """AJAX endpoint for editing tributes"""
+    try:
+        tribute = Tribute.objects.get(id=pk)
+        is_owner = request.user == tribute.memorial.user
+        is_author = request.user == tribute.user
+        
+        if not is_owner and not is_author:
+            return JsonResponse(
+                {'success': False, 'error': 'Permission denied'},
+                status=403
+            )
+        
+        author_name = request.POST.get('author_name', '').strip()
+        message = request.POST.get('message', '').strip()
+
+        if not author_name:
+            return JsonResponse(
+                {'success': False, 'error': 'Name is required'},
+                status=400
+            )
+        if not message:
+            return JsonResponse(
+                {'success': False, 'error': 'Message is required'},
+                status=400
+            )
+        if len(message) > 2000:
+            return JsonResponse(
+                {'success': False, 'error': 'Message too long'},
+                status=400
+            )
+
+        tribute.author_name = author_name
+        tribute.message = message
+        tribute.save()
+        
+        return JsonResponse({
+            'success': True,
+            'tribute': {
+                'id': tribute.id,
+                'author_name': tribute.author_name,
+                'message': tribute.message,
+                'created_at': tribute.created_at.strftime("%b %d, %Y")
+            },
+            'can_edit': True
+        })
+    except Tribute.DoesNotExist:
+        return JsonResponse(
+            {'success': False, 'error': 'Tribute not found'},
+            status=404
+        )
+
+@require_POST
+@login_required
+def delete_tribute(request, pk):
+    """AJAX endpoint for deleting tributes"""
+    try:
+        tribute = Tribute.objects.get(id=pk)
+        memorial_id = tribute.memorial.id
+
+        if (request.user != tribute.memorial.user and
+                request.user != tribute.user):
+            return JsonResponse(
+                {'success': False, 'error': 'Permission denied'},
+                status=403
+            )
+
+        tribute.delete()
+        return JsonResponse(
+            {'success': True, 'memorial_id': memorial_id}
+        )
+    except Tribute.DoesNotExist:
+        return JsonResponse(
+            {'success': False, 'error': 'Tribute not found'},
+            status=404
+        )
+
+def get_tributes(request, pk):
+    """AJAX endpoint for loading more tributes"""
+    memorial = get_object_or_404(Memorial, pk=pk)
+    offset = int(request.GET.get('offset', 0))
+    limit = 3
+
+    tributes = memorial.tributes.all().order_by('-created_at')[offset:offset+limit]
+
+    return JsonResponse({
+        'tributes': [{
+            'id': t.id,
+            'author_name': t.author_name,
+            'message': t.message,
+            'created_at': t.created_at.strftime("%b %d, %Y")
+        } for t in tributes],
+        'is_owner': request.user == memorial.user
+    })
