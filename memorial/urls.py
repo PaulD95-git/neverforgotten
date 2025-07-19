@@ -11,6 +11,8 @@ from .views import (
     MyAccountView,
     edit_profile,
     UpgradeMemorialView,
+    update_name,
+    update_dates,
 )
 
 app_name = 'memorials'
@@ -38,6 +40,16 @@ urlpatterns = [
         '<int:pk>/upload-profile-picture/',
         views.upload_profile_picture,
         name='upload_profile_picture',
+    ),
+    path(
+        'memorials/<int:pk>/update-name/',
+        update_name,
+        name='update_name',
+    ),
+    path(
+        'memorials/<int:pk>/update-dates/',
+        update_dates,
+        name='update_dates',
     ),
 
 ]
