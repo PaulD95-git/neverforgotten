@@ -1,0 +1,234 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- ===================== -->
+<!-- HERO SECTION -->
+<!-- ===================== -->
+<section class="about-hero py-5">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-8 mx-auto text-center">
+        <!-- Hero Icon -->
+        <div class="hero-icon mb-4">
+          <i class="fas fa-heart-circle-bolt fa-4x" style="color: #d97b37;"></i>
+        </div>
+        
+        <!-- Main Heading -->
+        <h1 class="display-4 fw-bold mb-4">About NeverForgotten</h1>
+        <p class="lead mb-4">A digital sanctuary for memories, born from personal loss and built with love.</p>
+        
+        <!-- Call-to-Action Buttons -->
+        <div class="d-flex justify-content-center gap-3 flex-wrap">
+          <a href="#our-story" class="btn btn-primary btn-lg px-4">
+            <i class="fas fa-book-open me-2"></i> Our Story
+          </a>
+          <a href="#features" class="btn btn-outline-secondary btn-lg px-4">
+            <i class="fas fa-list-check me-2"></i> Features
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== -->
+<!-- OUR STORY SECTION -->
+<!-- ===================== -->
+<section id="our-story" class="py-5 bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <!-- Story Card -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-body p-4 p-md-5">
+            <!-- Section Header -->
+            <div class="text-center mb-5">
+              <div class="story-icon mb-4">
+                <i class="fas fa-route fa-3x" style="color: #d97b37;"></i>
+              </div>
+              <h2 class="fw-bold mb-3">From Personal Loss to Lasting Legacy</h2>
+              <div class="divider mx-auto"></div>
+            </div>
+            
+            <!-- Story Content -->
+            <div class="row align-items-center">
+              <!-- Founder Illustration -->
+              <div class="col-md-5 mb-4 mb-md-0 text-center">
+                <div class="founder-icon mb-3">
+                  <i class="fas fa-user-astronaut fa-5x" style="color: #3e2f1c;"></i>
+                </div>
+                <h4 class="fw-bold">A Solo Developer's Journey</h4>
+              </div>
+              
+              <!-- Story Text -->
+              <div class="col-md-7">
+                <div class="story-content">
+                  <p class="mb-4">
+                    <i class="fas fa-quote-left me-2" style="color: #d97b37;"></i> 
+                    NeverForgotten was created after experiencing the profound loss of a loved one. 
+                    I realized how quickly physical mementos can fade or be lost, and how difficult 
+                    it is to preserve memories for future generations.
+                  </p>
+                  <p class="mb-4">
+                    This platform was born from my personal journey through grief and my desire to 
+                    create something meaningful from that pain. As a developer, I channeled my skills 
+                    into building a digital space where memories could live on forever.
+                  </p>
+                  <p>
+                    What started as a personal project to honor one life has grown into a platform 
+                    helping thousands preserve their loved ones' legacies.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== -->
+<!-- FEATURES SECTION -->
+<!-- ===================== -->
+<section id="features" class="py-5">
+  <div class="container">
+    <!-- Section Header -->
+    <div class="text-center mb-5">
+      <h2 class="fw-bold mb-3">NeverForgotten Features</h2>
+      <div class="divider mx-auto"></div>
+      <p class="lead">Everything you need to create a beautiful, lasting memorial</p>
+    </div>
+    
+    <!-- Feature Cards Grid -->
+    <div class="row g-4">
+      <!-- Memorial Pages Feature -->
+      <div class="col-lg-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">
+            <i class="fas fa-monument fa-3x"></i>
+          </div>
+          <h3>Beautiful Memorial Pages</h3>
+          <ul class="feature-list">
+            <li><i class="fas fa-check-circle me-2"></i> Customizable banners and colors</li>
+            <li><i class="fas fa-check-circle me-2"></i> Profile photos and galleries</li>
+            <li><i class="fas fa-check-circle me-2"></i> Biography section</li>
+            <li><i class="fas fa-check-circle me-2"></i> Memorial music player</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- QR Codes Feature -->
+      <div class="col-lg-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">
+            <i class="fas fa-qrcode fa-3x"></i>
+          </div>
+          <h3>QR Code Sharing</h3>
+          <p class="mb-3">Each memorial generates a unique QR code for:</p>
+          <ul class="feature-list">
+            <li><i class="fas fa-check-circle me-2"></i> Memorial cards</li>
+            <li><i class="fas fa-check-circle me-2"></i> Headstones</li>
+            <li><i class="fas fa-check-circle me-2"></i> Digital sharing</li>
+          </ul>
+        </div>
+      </div>
+      
+      <!-- Community Feature -->
+      <div class="col-lg-4">
+        <div class="feature-card h-100">
+          <div class="feature-icon">
+            <i class="fas fa-people-group fa-3x"></i>
+          </div>
+          <h3>Community Sharing</h3>
+          <ul class="feature-list">
+            <li><i class="fas fa-check-circle me-2"></i> Tributes from loved ones</li>
+            <li><i class="fas fa-check-circle me-2"></i> Story sharing</li>
+            <li><i class="fas fa-check-circle me-2"></i> Photo galleries</li>
+            <li><i class="fas fa-check-circle me-2"></i> Privacy controls</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== -->
+<!-- VALUES SECTION -->
+<!-- ===================== -->
+<section class="py-5 bg-light">
+  <div class="container">
+    <!-- Section Header -->
+    <div class="text-center mb-5">
+      <h2 class="fw-bold mb-3">Our Core Values</h2>
+      <div class="divider mx-auto"></div>
+      <p class="lead">The principles that guide everything we do</p>
+    </div>
+    
+    <!-- Values Grid -->
+    <div class="row g-4">
+      <!-- Respect Value -->
+      <div class="col-md-4">
+        <div class="value-card h-100">
+          <div class="value-icon">
+            <i class="fas fa-hand-holding-heart fa-3x"></i>
+          </div>
+          <h3>Respect</h3>
+          <p>Every memorial is treated with the utmost dignity and care, honoring the life it represents.</p>
+        </div>
+      </div>
+      
+      <!-- Permanence Value -->
+      <div class="col-md-4">
+        <div class="value-card h-100">
+          <div class="value-icon">
+            <i class="fas fa-infinity fa-3x"></i>
+          </div>
+          <h3>Permanence</h3>
+          <p>We're committed to preserving memories forever with our permanent digital archiving.</p>
+        </div>
+      </div>
+      
+      <!-- Privacy Value -->
+      <div class="col-md-4">
+        <div class="value-card h-100">
+          <div class="value-icon">
+            <i class="fas fa-lock fa-3x"></i>
+          </div>
+          <h3>Privacy</h3>
+          <p>You control who can contribute to each memorial with robust privacy settings.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== -->
+<!-- CALL TO ACTION SECTION -->
+<!-- ===================== -->
+<section class="py-5 cta-section">
+  <div class="container text-center">
+    <h2 class="fw-bold mb-3">Ready to Create a Lasting Tribute?</h2>
+    <p class="lead mb-4">Join thousands of families preserving their loved ones' memories</p>
+    
+    <!-- Action Buttons -->
+    <div class="d-flex justify-content-center gap-3 flex-wrap">
+      <a href="{% url 'memorials:memorial_create' %}" class="btn btn-light btn-lg px-4">
+        <i class="fas fa-plus me-2"></i> Create Memorial
+      </a>
+      <a href="" class="btn btn-outline-light btn-lg px-4">
+        <i class="fas fa-search me-2"></i> Browse Memorials
+      </a>
+      <a href="{% url 'memorials:contact' %}" class="btn btn-outline-light btn-lg px-4">
+        <i class="fas fa-envelope me-2"></i> Contact Us
+      </a>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/about.css' %}">
+{% endblock %}

@@ -16,6 +16,7 @@ urlpatterns = [
     path('', index, name='index'),
     path('plans/', plans, name='plans'),
     path('contact/', views.contact, name='contact'),
+    path('about/', views.about, name='about'),
 
 
     # Memorial CRUD Operations

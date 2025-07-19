@@ -1,0 +1,367 @@
+/* ===================== */
+/* ABOUT PAGE STYLES      */
+/* ===================== */
+
+/* ===================== */
+/* HERO SECTION           */
+/* ===================== */
+.about-hero {
+    background-color: #fffaf3;
+    padding: 5rem 0;
+    border-bottom: 1px solid #f7e8c9;
+    text-align: center;
+}
+
+.about-hero h1 {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 2.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.about-hero p.lead {
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+}
+
+.hero-icon {
+    margin-bottom: 2rem;
+    color: #d97b37;
+    font-size: 2.5rem;
+}
+
+/* ===================== */
+/* STORY SECTION          */
+/* ===================== */
+.story-section {
+    padding: 4rem 0;
+}
+
+.story-icon {
+    color: #d97b37;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.divider {
+    width: 60px;
+    height: 3px;
+    background-color: #d97b37;
+    margin: 1rem auto;
+}
+
+.founder-icon {
+    color: #3e2f1c;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.story-content p {
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+/* ===================== */
+/* FEATURE CARDS          */
+/* ===================== */
+.features-section {
+    padding: 4rem 0;
+}
+
+.feature-card {
+    background-color: #fffaf3;
+    border-radius: 12px;
+    padding: 2rem;
+    height: 100%;
+    border: 1px solid #f7e8c9;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    margin-bottom: 2rem;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(217, 123, 55, 0.1);
+}
+
+.feature-icon {
+    color: #d97b37;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.feature-card h3 {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.feature-card h3::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background-color: #d97b37;
+}
+
+.feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.feature-list li {
+    margin-bottom: 0.7rem;
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    padding-left: 1.5rem;
+    position: relative;
+}
+
+.feature-list li::before {
+    content: '•';
+    color: #d97b37;
+    position: absolute;
+    left: 0;
+}
+
+.qr-preview {
+    padding: 1rem;
+    background-color: white;
+    border-radius: 8px;
+    display: inline-block;
+    border: 1px solid #e8d9b5;
+    margin-top: 1rem;
+}
+
+/* ===================== */
+/* VALUE PROPOSITION      */
+/* ===================== */
+.values-section {
+    padding: 4rem 0;
+}
+
+.value-card {
+    background-color: #fffaf3;
+    border-radius: 12px;
+    padding: 2rem;
+    text-align: center;
+    border: 1px solid #f7e8c9;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    height: 100%;
+    transition: all 0.3s ease;
+    margin-bottom: 2rem;
+}
+
+.value-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(217, 123, 55, 0.1);
+}
+
+.value-icon {
+    color: #d97b37;
+    margin-bottom: 1.5rem;
+    font-size: 2rem;
+}
+
+.value-card h3 {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 1.3rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.value-card p {
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    font-size: 0.95rem;
+    line-height: 1.6;
+}
+
+/* ===================== */
+/* DEVELOPER SECTION      */
+/* ===================== */
+.developer-section {
+    background-color: #d97b37;
+    color: #fffaf3;
+    padding: 5rem 0;
+}
+
+.developer-card {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    padding: 3rem;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.developer-icon {
+    color: #fffaf3;
+    margin-bottom: 1.5rem;
+    font-size: 2.5rem;
+}
+
+.developer-card h2 {
+    font-family: 'Lora', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.developer-card p {
+    font-family: 'Lora', serif;
+    font-size: 1.05rem;
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+}
+
+/* ===================== */
+/* CALL TO ACTION         */
+/* ===================== */
+.cta-section {
+    background-color: #3e2f1c;
+    color: #fffaf3;
+    padding: 4rem 0;
+    text-align: center;
+}
+
+.cta-section h2 {
+    font-family: 'Lora', serif;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.cta-section p.lead {
+    font-family: 'Lora', serif;
+    font-size: 1.1rem;
+    max-width: 600px;
+    margin: 0 auto 2rem;
+    line-height: 1.6;
+}
+
+/* ===================== */
+/* BUTTON STYLES          */
+/* ===================== */
+.btn {
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    padding: 0.7rem 1.8rem;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    border: 1px solid transparent;
+}
+
+.btn-primary {
+    background-color: #d97b37;
+    color: #fffaf3;
+}
+
+.btn-primary:hover {
+    background-color: #b86528;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(184, 101, 40, 0.3);
+}
+
+.btn-outline-secondary {
+    border-color: #e8d9b5;
+    color: #6c584c;
+    background-color: transparent;
+}
+
+.btn-outline-secondary:hover {
+    background-color: #f7e8c9;
+    color: #3e2f1c;
+}
+
+.btn-light {
+    background-color: #fffaf3;
+    color: #3e2f1c;
+}
+
+.btn-light:hover {
+    background-color: #f7e8c9;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(247, 232, 201, 0.3);
+}
+
+.btn-outline-light {
+    border-color: #fffaf3;
+    color: #fffaf3;
+    background-color: transparent;
+}
+
+.btn-outline-light:hover {
+    background-color: rgba(255, 250, 243, 0.1);
+}
+
+/* ===================== */
+/* RESPONSIVE ADJUSTMENTS */
+/* ===================== */
+@media (max-width: 768px) {
+    .about-hero,
+    .story-section,
+    .features-section,
+    .values-section,
+    .developer-section,
+    .cta-section {
+        padding: 3rem 0;
+    }
+
+    .about-hero h1,
+    .developer-card h2,
+    .cta-section h2 {
+        font-size: 2.2rem;
+    }
+    
+    .about-hero p.lead,
+    .developer-card p,
+    .cta-section p.lead {
+        font-size: 1rem;
+        padding: 0 1rem;
+    }
+    
+    .btn {
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .feature-card,
+    .value-card {
+        padding: 1.5rem;
+    }
+
+    .developer-card {
+        padding: 2rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .about-hero h1 {
+        font-size: 2rem;
+    }
+
+    .feature-card h3,
+    .value-card h3 {
+        font-size: 1.2rem;
+    }
+}
