@@ -1,8 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block extra_css %}
-  <link href="{% static 'css/memorials/memorial_edit.css' %}" rel="stylesheet">
+{% block extra_head %}
+  <!-- Memorial edit page specific CSS -->
+  <link href="{% static 'css/memorial_edit.css' %}" rel="stylesheet">
 {% endblock %}
 
 {% block title %}Edit Memorial - {{ memorial.first_name }} {{ memorial.last_name }}{% endblock %}
@@ -71,7 +72,6 @@
     </div>
   </div>
 
-
   <!-- Profile Picture Upload Form -->
   <form method="POST" enctype="multipart/form-data" 
         id="pfpUploadForm" action="{% url 'memorials:upload_profile_picture' memorial.pk %}">
@@ -92,7 +92,7 @@
     </div>
   </form>
 
-    <!-- Memorial Name and Dates Section -->
+  <!-- Memorial Name and Dates Section -->
   <div class="container text-center mt-0" style="bottom: 100px;">
     <!-- Editable Name with Modal -->
     <h1 class="fw-bold editable-field" id="editable-name" 
@@ -175,7 +175,7 @@
     </div>
   </div>
 
-    <!-- Share Button -->
+  <!-- Share Button -->
   <div class="d-flex justify-content-center my-4">
     <button id="shareButton" class="btn btn-outline-primary share-button">
       <i class="fas fa-share-alt me-2"></i> Share Memorial Page
@@ -192,7 +192,7 @@
     </div>
   {% endif %}
 
-    <!-- Editable Quote Section -->
+  <!-- Editable Quote Section -->
   <div class="quote-container container text-center mt-3">
     <p id="editable-quote" class="editable-field" 
        data-bs-toggle="modal" data-bs-target="#quoteEditModal">
@@ -293,8 +293,8 @@
       </div>
     </div>
   </div>
-
-   <!-- Tributes Section -->
+  
+  <!-- Tributes Section -->
   <section class="tributes-section container mt-5 p-4 rounded-3 shadow-sm bg-light" 
            data-memorial-id="{{ memorial.pk }}"
            data-delete-tribute-url="{% url 'memorials:delete_tribute' 0 %}">
@@ -502,7 +502,42 @@
     </div>
   </div>
 
-    <!-- Music Upload Modal -->
+  <!-- Music Section -->
+  <div class="music-section container text-center mt-4">
+    <h2 class="music-title">Memorial Music</h2>
+
+    {% if memorial.plan and memorial.plan.name|lower != 'free' %}
+      <!-- Unlocked: Show audio or upload -->
+      {% if memorial.audio_file %}
+        <audio controls class="mt-3">
+          <source src="{{ memorial.audio_file.url }}" type="audio/mpeg">
+          Your browser does not support the audio element.
+        </audio>
+      {% else %}
+        <p class="text-muted mt-3">No music uploaded yet.</p>
+      {% endif %}
+
+      <button class="btn btn-outline-secondary mt-3" 
+              data-bs-toggle="modal" 
+              data-bs-target="#musicEditModal">
+        <i class="fas fa-music me-2"></i> 
+        {% if memorial.audio_file %}Change{% else %}Add{% endif %} Music
+      </button>
+
+    {% else %}
+      <!-- Locked: No audio player, show lock and disable button -->
+      <button class="btn btn-outline-secondary mt-3" disabled title="Upgrade to unlock">
+        <i class="fas fa-lock me-2"></i> Music Locked
+      </button>
+      <br>
+      <br>
+      <a href="{% url 'plans:choose_plan' memorial.id %}" class="btn btn-sm btn-warning">
+        <i class="fas fa-star me-2"></i> Unlock Premium
+      </a>
+    {% endif %}
+  </div>
+
+  <!-- Music Upload Modal -->
   <div class="modal fade" id="musicEditModal" tabindex="-1" 
        aria-labelledby="musicEditModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -530,7 +565,7 @@
     </div>
   </div>
 
-    <!-- Gallery Section -->
+  <!-- Gallery Section -->
   <section class="gallery-section container mt-5 p-4 rounded-3 shadow-sm bg-light">
     <h2 class="gallery-title fs-3 fw-bold text-dark mb-4 text-center">Photo Gallery</h2>
     <!-- Add this somewhere in your base template or gallery section -->
@@ -949,104 +984,37 @@
     </div>
   </div>
 </div>
-  
+
+<div class="qr-code-section">
+    <h3>Share This Memorial</h3>
+    <p class="qr-instructions">Scan this QR code to visit this memorial from another device</p>
+    
+    {% if memorial.qr_code_public_id %}
+        <div class="qr-code-container">
+            <img src="{{ memorial.get_qr_code_url }}" 
+                 alt="QR Code for {{ memorial.first_name }} {{ memorial.last_name }}"
+                 class="qr-code-image"
+                 id="qrCodeImage"
+                 onerror="this.style.display='none'; console.error('Failed to load QR code')">
+        </div>
+        <br>
+        <button class="qr-download-btn" id="downloadQrBtn" 
+                data-qr-url="{{ memorial.get_qr_code_url }}">
+            <i class="fas fa-download"></i> Download QR Code
+        </button>
+    {% else %}
+        <p class="text-muted">QR code not available</p>
+    {% endif %}
+</div>
+
 {% endblock %}
 
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/memorial_edit.css' %}">
+{% endblock %}
 {% block extra_js %}
-<script src="{% static 'js/memorials/memorial_edit.js' %}"></script>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-  const form = document.getElementById('pfpUploadForm');
-  const uploadWrapper = document.querySelector('.profile-pic-wrapper');
-  const profileImg = uploadWrapper.querySelector('img');
-  const fileInput = document.getElementById('profilePictureInput');
-  const uploadIcon = document.querySelector('.upload-icon');
-  
-  // Store original clean URL (without parameters)
-  profileImg.dataset.originalSrc = profileImg.src.split('?')[0];
-
-  // Create loading spinner
-  const spinner = document.createElement('div');
-  spinner.className = 'pfp-loading-spinner';
-  spinner.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
-  spinner.style.display = 'none';
-  uploadWrapper.appendChild(spinner);
-
-  // Handle click on wrapper
-  uploadWrapper.addEventListener('click', function(e) {
-    if (!e.target.matches('input')) {
-      fileInput.click();
-    }
-  });
-
-  // Handle file selection
-  fileInput.addEventListener('change', function() {
-    if (!this.files || !this.files[0]) return;
-
-    // Show loading state
-    spinner.style.display = 'block';
-    uploadIcon.style.visibility = 'hidden';
-    profileImg.style.opacity = '0.7';
-    uploadWrapper.style.cursor = 'wait';
-
-    // Preview image immediately
-    const reader = new FileReader();
-    reader.onload = function(e) {
-      profileImg.src = e.target.result;
-    };
-    reader.readAsDataURL(this.files[0]);
-
-    // Prepare form data
-    const formData = new FormData(form);
-    
-    // AJAX upload
-    fetch(form.action, {
-      method: 'POST',
-      headers: {
-        'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
-        'X-Requested-With': 'XMLHttpRequest'
-      },
-      body: formData
-    })
-    .then(response => {
-      if (!response.ok) throw new Error('Network response was not ok');
-      return response.json();
-    })
-    .then(data => {
-      if (data.status === 'success') {
-        // Update with the clean URL from server
-        profileImg.src = data.profile_picture_url;
-        profileImg.dataset.originalSrc = data.profile_picture_url;
-        
-        // Show success message
-        const successMsg = document.createElement('div');
-        successMsg.className = 'upload-success-message';
-        successMsg.textContent = data.message;
-        uploadWrapper.appendChild(successMsg);
-        
-        // Remove message after 3 seconds
-        setTimeout(() => successMsg.remove(), 3000);
-      } else {
-        throw new Error(data.message || 'Upload failed');
-      }
-    })
-    .catch(error => {
-      console.error('Error:', error);
-      // Revert to original image
-      profileImg.src = profileImg.dataset.originalSrc;
-      alert('Error: ' + error.message);
-    })
-    .finally(() => {
-      // Reset UI
-      spinner.style.display = 'none';
-      uploadIcon.style.visibility = 'visible';
-      profileImg.style.opacity = '1';
-      uploadWrapper.style.cursor = 'pointer';
-      fileInput.value = '';
-    });
-  });
-});
-</script>
+<script src="{% static 'js/memorial_edit.js' %}"></script>
 <script>
   const csrfToken = getCookie('csrftoken');
   const memorialId = "{{ memorial.pk }}";
@@ -1197,6 +1165,9 @@ document.addEventListener('DOMContentLoaded', function() {
       removeModalBackdrop();
     });
   });
+</script>
+<script>
+
 </script>
 <script>
 document.addEventListener('DOMContentLoaded', () => {
@@ -1459,6 +1430,404 @@ document.addEventListener('DOMContentLoaded', () => {
         : '<i class="fas fa-chevron-up me-2"></i>View Less';
     });
   }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  // Safely get elements with null checks
+  const storiesSection = document.querySelector('.stories-section');
+  if (!storiesSection) {
+    console.warn('Stories section not found');
+    return;
+  }
+
+  const memorialId = storiesSection.dataset.memorialId;
+  const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]')?.value;
+
+  // Safely initialize modals
+  const storyFormModalEl = document.getElementById('storyFormModal');
+  const editStoryModalEl = document.getElementById('editStoryModal');
+  
+  if (!storyFormModalEl || !editStoryModalEl) {
+    console.warn('Required modals not found');
+    return;
+  }
+
+  const storyFormModal = bootstrap.Modal.getOrCreateInstance(storyFormModalEl);
+  const editStoryModal = bootstrap.Modal.getOrCreateInstance(editStoryModalEl);
+
+  // Get form elements
+  const storyList = document.getElementById('story-list');
+  const openStoryFormBtn = document.getElementById('open-story-form');
+  const storyForm = document.getElementById('story-form');
+  const editStoryForm = document.getElementById('edit-story-form');
+
+  // Check for essential elements
+  if (!storyList || !openStoryFormBtn || !storyForm || !editStoryForm) {
+    console.error('Essential story elements missing');
+    return;
+  }
+
+  // --- Helper Functions ---
+
+  /**
+   * Escapes HTML to prevent XSS
+   */
+  function escapeHTML(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
+  }
+
+  /**
+   * Generates HTML for a story card
+   */
+  function generateStoryCard(story, canEdit = false) {
+    const dateStr = new Date(story.created_at).toLocaleDateString(undefined, {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric',
+    });
+
+    return `
+      <div class="col-12 story-item" data-story-id="${story.id}">
+        <div class="card story-card h-100 border-0 shadow-sm">
+          <div class="card-body d-flex flex-column">
+            <div class="d-flex justify-content-between align-items-start mb-3">
+              <div>
+                <h3 class="card-title mb-1 fs-5 fw-semibold">${escapeHTML(story.title)}</h3>
+                <p class="text-muted mb-0">by ${escapeHTML(story.author_name)}</p>
+              </div>
+              <small class="text-muted">${dateStr}</small>
+            </div>
+            <div class="card-text flex-grow-1 mb-3 lh-base story-content">
+              ${escapeHTML(story.content).replace(/\n/g, '<br>')}
+            </div>
+            ${canEdit ? `
+            <div class="mt-auto text-end" data-user-can-edit="true">
+              <button class="btn btn-sm btn-outline-primary edit-story me-2" 
+                      data-story-id="${story.id}"
+                      data-author-name="${escapeHTML(story.author_name)}"
+                      data-title="${escapeHTML(story.title)}"
+                      data-content="${escapeHTML(story.content)}"
+                      aria-label="Edit story">
+                <i class="fas fa-edit me-1"></i> Edit
+              </button>
+              <button class="btn btn-sm btn-outline-danger delete-story" 
+                      data-story-id="${story.id}"
+                      aria-label="Delete story">
+                <i class="fas fa-trash me-1"></i> Delete
+              </button>
+            </div>
+            ` : ''}
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  // --- Event Handlers ---
+
+  /**
+   * Handles opening the create story modal
+   */
+  openStoryFormBtn.addEventListener('click', () => {
+    storyForm.reset();
+    storyForm.action = `/memorials/${memorialId}/stories/create/`;
+    storyFormModal.show();
+    const firstInput = storyForm.querySelector('input, textarea, select');
+    firstInput?.focus();
+  });
+
+  /**
+   * Handles story form submission
+   */
+  storyForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(storyForm);
+
+    try {
+      const response = await fetch(storyForm.action, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Network response was not ok');
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Remove empty state if it exists
+        const emptyMessage = document.getElementById('empty-stories-message');
+        if (emptyMessage) emptyMessage.remove();
+
+        // Add new story to the top
+        storyList.insertAdjacentHTML('afterbegin', generateStoryCard(data.story, data.can_edit));
+        
+        // Close modal and reset
+        storyFormModal.hide();
+        storyForm.reset();
+        openStoryFormBtn.focus();
+      } else {
+        throw new Error(data.error || 'Failed to create story');
+      }
+    } catch (error) {
+      console.error('Story creation error:', error);
+      alert(`Error: ${error.message}`);
+    }
+  });
+
+  /**
+   * Handles edit/delete button clicks via delegation
+   */
+  storyList.addEventListener('click', (e) => {
+    const editBtn = e.target.closest('.edit-story');
+    const deleteBtn = e.target.closest('.delete-story');
+
+    if (editBtn) {
+      // Set up edit form
+      editStoryForm.action = `/memorials/stories/${editBtn.dataset.storyId}/edit/`;
+      document.getElementById('edit-story-id').value = editBtn.dataset.storyId;
+      document.getElementById('edit-author-name').value = editBtn.dataset.authorName;
+      document.getElementById('edit-title').value = editBtn.dataset.title;
+      document.getElementById('edit-content').value = editBtn.dataset.content;
+      
+      // Show modal and focus
+      editStoryModal.show();
+      document.getElementById('edit-title').focus();
+    } 
+    else if (deleteBtn) {
+      // Set up delete confirmation modal
+      document.getElementById('delete-story-title').textContent = deleteBtn.dataset.title;
+      document.getElementById('delete-story-author').textContent = deleteBtn.dataset.authorName;
+      document.getElementById('delete-story-content').textContent = deleteBtn.dataset.content;
+      
+      // Show confirmation modal
+      const deleteModal = new bootstrap.Modal(document.getElementById('deleteStoryModal'));
+      deleteModal.show();
+      
+      // Set up confirm delete button
+      document.getElementById('confirm-story-delete').onclick = () => {
+        deleteStory(deleteBtn.dataset.storyId);
+        deleteModal.hide();
+      };
+    }
+  });
+
+  /**
+   * Handles edit form submission
+   */
+  editStoryForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const formData = new FormData(editStoryForm);
+    const storyId = formData.get('story_id');
+
+    try {
+      const response = await fetch(editStoryForm.action, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+        body: formData,
+      });
+
+      if (!response.ok) throw new Error('Network response was not ok');
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Update the story in the list
+        const storyElem = document.querySelector(`.story-item[data-story-id="${storyId}"]`);
+        if (storyElem) {
+          storyElem.outerHTML = generateStoryCard(data.story, data.can_edit);
+        }
+        
+        // Close modal
+        editStoryModal.hide();
+      } else {
+        throw new Error(data.error || 'Failed to update story');
+      }
+    } catch (error) {
+      console.error('Story edit error:', error);
+      alert(`Error: ${error.message}`);
+    }
+  });
+
+  /**
+   * Deletes a story
+   */
+  async function deleteStory(storyId) {
+    try {
+      const response = await fetch(`/memorials/stories/${storyId}/delete/`, {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest',
+        },
+      });
+
+      if (!response.ok) throw new Error('Network response was not ok');
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Remove story from DOM
+        const storyElem = document.querySelector(`.story-item[data-story-id="${storyId}"]`);
+        storyElem?.remove();
+        
+        // Show empty state if no stories left
+        if (!document.querySelector('.story-item')) {
+          document.getElementById('empty-stories-message')?.classList.remove('d-none');
+        }
+      } else {
+        throw new Error(data.error || 'Failed to delete story');
+      }
+    } catch (error) {
+      console.error('Story deletion error:', error);
+      alert(`Error: ${error.message}`);
+    }
+  }
+
+  // --- Toggle Stories Visibility ---
+  const toggleStoriesBtn = document.getElementById('toggle-stories-btn');
+  const hiddenStories = document.getElementById('hidden-stories');
+  
+  if (toggleStoriesBtn && hiddenStories) {
+    toggleStoriesBtn.addEventListener('click', function() {
+      hiddenStories.classList.toggle('d-none');
+      
+      // Update button text
+      this.innerHTML = hiddenStories.classList.contains('d-none') 
+        ? '<i class="fas fa-chevron-down me-2"></i>View More Stories'
+        : '<i class="fas fa-chevron-up me-2"></i>View Less';
+    });
+  }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Gallery carousel functionality (keep this)
+  const galleryModal = document.getElementById('galleryModal');
+  if (galleryModal) {
+    const galleryCarousel = new bootstrap.Carousel('#galleryCarousel');
+    galleryModal.addEventListener('show.bs.modal', function(event) {
+      const trigger = event.relatedTarget;
+      const slideIndex = trigger.getAttribute('data-bs-slide-to');
+      if (slideIndex) galleryCarousel.to(parseInt(slideIndex));
+    });
+  }
+
+  // Simple view more/less toggle (keep this)
+  const toggleBtn = document.getElementById('toggle-gallery-btn');
+  if (toggleBtn) {
+    toggleBtn.addEventListener('click', function() {
+      const hiddenGallery = document.getElementById('hidden-gallery');
+      hiddenGallery.classList.toggle('d-none');
+      this.querySelector('i').classList.toggle('fa-chevron-down');
+      this.querySelector('i').classList.toggle('fa-chevron-up');
+      this.querySelector('span').textContent = 
+        hiddenGallery.classList.contains('d-none') ? 'View More' : 'View Less';
+    });
+  }
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('pfpUploadForm');
+  const uploadWrapper = document.querySelector('.profile-pic-wrapper');
+  const profileImg = uploadWrapper.querySelector('img');
+  const fileInput = document.getElementById('profilePictureInput');
+  const uploadIcon = document.querySelector('.upload-icon');
+  
+  // Store original clean URL (without parameters)
+  profileImg.dataset.originalSrc = profileImg.src.split('?')[0];
+
+  // Create loading spinner
+  const spinner = document.createElement('div');
+  spinner.className = 'pfp-loading-spinner';
+  spinner.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  spinner.style.display = 'none';
+  uploadWrapper.appendChild(spinner);
+
+  // Handle click on wrapper
+  uploadWrapper.addEventListener('click', function(e) {
+    if (!e.target.matches('input')) {
+      fileInput.click();
+    }
+  });
+
+  // Handle file selection
+  fileInput.addEventListener('change', function() {
+    if (!this.files || !this.files[0]) return;
+
+    // Show loading state
+    spinner.style.display = 'block';
+    uploadIcon.style.visibility = 'hidden';
+    profileImg.style.opacity = '0.7';
+    uploadWrapper.style.cursor = 'wait';
+
+    // Preview image immediately
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      profileImg.src = e.target.result;
+    };
+    reader.readAsDataURL(this.files[0]);
+
+    // Prepare form data
+    const formData = new FormData(form);
+    
+    // AJAX upload
+    fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: formData
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        // Update with the clean URL from server
+        profileImg.src = data.profile_picture_url;
+        profileImg.dataset.originalSrc = data.profile_picture_url;
+        
+        // Show success message
+        const successMsg = document.createElement('div');
+        successMsg.className = 'upload-success-message';
+        successMsg.textContent = data.message;
+        uploadWrapper.appendChild(successMsg);
+        
+        // Remove message after 3 seconds
+        setTimeout(() => successMsg.remove(), 3000);
+      } else {
+        throw new Error(data.message || 'Upload failed');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      // Revert to original image
+      profileImg.src = profileImg.dataset.originalSrc;
+      alert('Error: ' + error.message);
+    })
+    .finally(() => {
+      // Reset UI
+      spinner.style.display = 'none';
+      uploadIcon.style.visibility = 'visible';
+      profileImg.style.opacity = '1';
+      uploadWrapper.style.cursor = 'pointer';
+      fileInput.value = '';
+    });
+  });
 });
 </script>
 <script>

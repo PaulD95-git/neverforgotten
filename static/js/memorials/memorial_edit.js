@@ -182,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+
 // QUOTE SECTION
 document.addEventListener('DOMContentLoaded', function() {
     const quoteForm = document.getElementById('quote-edit-form');
