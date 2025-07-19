@@ -92,6 +92,88 @@
     </div>
   </form>
 
+    <!-- Memorial Name and Dates Section -->
+  <div class="container text-center mt-0" style="bottom: 100px;">
+    <!-- Editable Name with Modal -->
+    <h1 class="fw-bold editable-field" id="editable-name" 
+        data-bs-toggle="modal" data-bs-target="#nameEditModal">
+      {{ memorial.first_name }} 
+      {% if memorial.middle_name %}{{ memorial.middle_name }} {% endif %}
+      {{ memorial.last_name }}
+      <i class="fas fa-edit ms-2" style="font-size: 0.6em; opacity: 0.7;"></i>
+    </h1>
+    <br>
+    <!-- Editable Dates with Modal -->
+    <p class="dates editable-field" id="editable-dates" 
+       data-bs-toggle="modal" data-bs-target="#datesEditModal">
+      {{ memorial.date_of_birth|date:"F j, Y" }} - {{ memorial.date_of_death|date:"F j, Y" }}
+      <i class="fas fa-edit ms-2" style="font-size: 0.6em; opacity: 0.7;"></i>
+    </p>
+  </div>
+
+  <!-- Name Edit Modal -->
+  <div class="modal fade" id="nameEditModal" tabindex="-1" 
+       aria-labelledby="nameEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="name-edit-form" method="POST" 
+              action="{% url 'memorials:memorial_edit' memorial.pk %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="nameEditModalLabel">Edit Name</h5>
+            <button type="button" class="btn-close" 
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="text" name="first_name" value="{{ memorial.first_name }}" 
+                   class="form-control mb-2" required>
+            <input type="text" name="middle_name" 
+                   value="{{ memorial.middle_name|default:'' }}" 
+                   class="form-control mb-2">
+            <input type="text" name="last_name" value="{{ memorial.last_name }}" 
+                   class="form-control mb-2" required>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" 
+                    data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Dates Edit Modal -->
+  <div class="modal fade" id="datesEditModal" tabindex="-1" 
+       aria-labelledby="datesEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="dates-edit-form" method="POST" 
+              action="{% url 'memorials:memorial_edit' memorial.pk %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="datesEditModalLabel">Edit Dates</h5>
+            <button type="button" class="btn-close" 
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body d-flex justify-content-center align-items-center gap-2">
+            <input type="date" name="date_of_birth" 
+                   value="{{ memorial.date_of_birth|date:'Y-m-d' }}" 
+                   class="form-control" required>
+            <span>-</span>
+            <input type="date" name="date_of_death" 
+                   value="{{ memorial.date_of_death|date:'Y-m-d' }}" 
+                   class="form-control" required>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" 
+                    data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   
 {% endblock %}
 
@@ -189,5 +271,93 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   });
 });
+</script>
+<script>
+  const csrfToken = getCookie('csrftoken');
+  const memorialId = "{{ memorial.pk }}";
+
+  // Submit Name via AJAX
+  document.getElementById("name-edit-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch(`/memorials/${memorialId}/update-name/`, {
+      method: "POST",
+      headers: {
+        'X-CSRFToken': csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        // Update name display
+        const nameField = document.getElementById("editable-name");
+        nameField.innerHTML = `
+          ${data.first_name} ${data.middle_name || ''} ${data.last_name}
+          <i class="fas fa-edit ms-2" style="font-size: 0.6em; opacity: 0.7;"></i>
+        `;
+
+        // Close the modal and clean up
+        const nameModal = bootstrap.Modal.getInstance(document.getElementById('nameEditModal'));
+        if (nameModal) {
+          nameModal.hide();
+          nameModal._element.addEventListener('hidden.bs.modal', removeModalBackdrop);
+        } else {
+          removeModalBackdrop();
+        }
+      } else {
+        alert("Failed to update name.");
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      removeModalBackdrop();
+    });
+  });
+
+  // Submit Dates via AJAX
+  document.getElementById("dates-edit-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch(`/memorials/${memorialId}/update-dates/`, {
+      method: "POST",
+      headers: {
+        'X-CSRFToken': csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        // Update date display
+        const datesField = document.getElementById("editable-dates");
+        datesField.innerHTML = `
+          ${data.date_of_birth} - ${data.date_of_death}
+          <i class="fas fa-edit ms-2" style="font-size: 0.6em; opacity: 0.7;"></i>
+        `;
+
+        // Close the modal and clean up
+        const datesModal = bootstrap.Modal.getInstance(document.getElementById('datesEditModal'));
+        if (datesModal) {
+          datesModal.hide();
+          datesModal._element.addEventListener('hidden.bs.modal', removeModalBackdrop);
+        } else {
+          removeModalBackdrop();
+        }
+      } else {
+        alert("Failed to update dates.");
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      removeModalBackdrop();
+    });
+  });
 </script>
 {% endblock %}

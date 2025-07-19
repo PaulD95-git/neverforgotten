@@ -100,3 +100,84 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
+
+
+// NAMES AND DATES 
+
+document.addEventListener('DOMContentLoaded', function() {
+    // Handle name form submission
+    document.getElementById('name-edit-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        
+        // Get the correct URL from the form's action attribute
+        const updateUrl = form.action.replace('/edit/', '/update-name/');
+        
+        fetch(updateUrl, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(text) });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById('editable-name').innerHTML = 
+                    `${data.new_name} <i class="fas fa-edit ms-2" style="font-size: 0.6em; opacity: 0.7;"></i>`;
+                bootstrap.Modal.getInstance(document.getElementById('nameEditModal')).hide();
+            } else {
+                alert('Error updating name: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to update name. Server responded with: ' + error.message);
+        });
+    });
+
+    // Handle dates form submission
+    document.getElementById('dates-edit-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const form = e.target;
+        const formData = new FormData(form);
+        
+        // Get the correct URL from the form's action attribute
+        const updateUrl = form.action.replace('/edit/', '/update-dates/');
+        
+        fetch(updateUrl, {
+            method: 'POST',
+            body: formData,
+            headers: {
+                'X-CSRFToken': formData.get('csrfmiddlewaretoken'),
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => {
+            if (!response.ok) {
+                return response.text().then(text => { throw new Error(text) });
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.status === 'success') {
+                document.getElementById('editable-dates').innerHTML = 
+                    `${data.new_dates} <i class="fas fa-edit ms-2" style="font-size: 0.6em; opacity: 0.7;"></i>`;
+                bootstrap.Modal.getInstance(document.getElementById('datesEditModal')).hide();
+            } else {
+                alert('Error updating dates: ' + (data.message || 'Unknown error'));
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to update dates. Server responded with: ' + error.message);
+        });
+    });
+});

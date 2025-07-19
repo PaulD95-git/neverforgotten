@@ -347,3 +347,81 @@ def upload_profile_picture(request, pk):
         {'status': 'error', 'message': 'Invalid request'},
         status=400
     )
+
+
+@require_POST
+def update_name(request, pk):
+    """AJAX endpoint for updating memorial name"""
+    try:
+        memorial = Memorial.objects.get(pk=pk)
+        memorial.first_name = request.POST.get('first_name', '')
+        memorial.middle_name = request.POST.get('middle_name', '')
+        memorial.last_name = request.POST.get('last_name', '')
+        memorial.save()
+        
+        full_name = (
+            f"{memorial.first_name} "
+            f"{memorial.middle_name + ' ' if memorial.middle_name else ''}"
+            f"{memorial.last_name}"
+        )
+        
+        return JsonResponse({
+            'status': 'success',
+            'new_name': full_name.strip()
+        })
+    except Memorial.DoesNotExist:
+        return JsonResponse(
+            {'status': 'error', 'message': 'Memorial not found'},
+            status=404
+        )
+    except Exception as e:
+        return JsonResponse(
+            {'status': 'error', 'message': str(e)},
+            status=400
+        )
+
+@require_POST
+def update_dates(request, pk):
+    """AJAX endpoint for updating memorial dates"""
+    try:
+        memorial = Memorial.objects.get(pk=pk)
+        
+        date_of_birth_str = request.POST.get('date_of_birth')
+        date_of_death_str = request.POST.get('date_of_death')
+        
+        try:
+            date_of_birth = datetime.strptime(
+                date_of_birth_str,
+                '%Y-%m-%d'
+            ).date()
+            date_of_death = datetime.strptime(
+                date_of_death_str,
+                '%Y-%m-%d'
+            ).date()
+        except (ValueError, TypeError) as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid date format. Use YYYY-MM-DD.'
+            }, status=400)
+        
+        memorial.date_of_birth = date_of_birth
+        memorial.date_of_death = date_of_death
+        memorial.save()
+        
+        return JsonResponse({
+            'status': 'success',
+            'new_dates': (
+                f"{date_of_birth.strftime('%B %d, %Y')} - "
+                f"{date_of_death.strftime('%B %d, %Y')}"
+            )
+        })
+    except Memorial.DoesNotExist:
+        return JsonResponse(
+            {'status': 'error', 'message': 'Memorial not found'},
+            status=404
+        )
+    except Exception as e:
+        return JsonResponse(
+            {'status': 'error', 'message': str(e)},
+            status=400
+        )
