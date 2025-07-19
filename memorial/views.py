@@ -2,10 +2,6 @@
 from datetime import datetime
 from urllib.parse import urlencode
 import json
-from django.http import JsonResponse
-
-# Django Imports
-from django.views.decorators.http import require_POST
 
 # Django Core
 from django import forms
@@ -15,15 +11,22 @@ from django.contrib.auth import logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.core.mail import send_mail
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from django.db import models, transaction
+from django.db.models import Q
+from django.http import JsonResponse
 from django.shortcuts import render, get_object_or_404, redirect, reverse
 from django.urls import reverse_lazy
-from django.views.decorators.csrf import csrf_protect
-from django.views.generic import ListView, CreateView, UpdateView, FormView
+from django.views.decorators.csrf import csrf_protect, csrf_exempt
+from django.views.decorators.http import require_POST, require_http_methods
+from django.views.generic import ListView, CreateView, UpdateView, FormView, DetailView
 
 # Third Party
-
+import cloudinary
+import cloudinary.uploader
 import stripe
-
+from cloudinary.uploader import upload, destroy
 
 # Local Apps
 from plans.models import Plan
@@ -654,3 +657,160 @@ def upload_audio(request, pk):
             messages.error(request, f"Error updating audio: {str(e)}")
     
     return redirect('memorials:memorial_edit', pk=memorial.id)
+
+@login_required
+def upload_gallery_image(request, memorial_id):
+    """View for uploading single gallery image"""
+    memorial = get_object_or_404(
+        Memorial,
+        id=memorial_id,
+        user=request.user
+    )
+
+    current_count = memorial.gallery_images.count()
+    is_premium = memorial.plan in ['premium', 'lifetime']
+    max_allowed = 9 if is_premium else 3
+
+    if current_count >= max_allowed:
+        messages.error(
+            request,
+            f"You can upload up to {max_allowed} images."
+        )
+        return redirect('memorial_edit', memorial_id=memorial.id)
+
+    if request.method == 'POST':
+        form = GalleryImageForm(request.POST, request.FILES)
+        if form.is_valid():
+            upload_result = cloudinary.uploader.upload(
+                request.FILES['image'],
+                folder=f"memorials/{memorial.id}/gallery",
+                use_filename=True,
+                unique_filename=False,
+                overwrite=False
+            )
+            
+            gallery_image = form.save(commit=False)
+            gallery_image.memorial = memorial
+            gallery_image.image = upload_result['public_id']
+            gallery_image.save()
+            
+            messages.success(request, "Image uploaded successfully.")
+            return redirect('memorial_edit', memorial_id=memorial.id)
+    else:
+        form = GalleryImageForm()
+
+    return render(
+        request,
+        'upload_gallery_image.html',
+        {'form': form, 'memorial': memorial}
+    )
+
+@require_http_methods(["POST"])
+@login_required
+@transaction.atomic
+def upload_gallery_images(request, pk):
+    """View for bulk uploading gallery images with AJAX support"""
+    memorial = get_object_or_404(Memorial, pk=pk, user=request.user)
+    is_ajax = request.headers.get('X-Requested-With') == 'XMLHttpRequest'
+
+    try:
+        # Validate premium status and max images
+        is_premium = memorial.plan in ['premium', 'lifetime']
+        max_images = 9 if is_premium else 3
+        current_count = memorial.gallery.count()
+        
+        if current_count >= max_images:
+            error_msg = f"You can only upload up to {max_images} images"
+            if is_ajax:
+                return JsonResponse({'success': False, 'error': error_msg}, status=400)
+            messages.error(request, error_msg)
+            return redirect('memorials:memorial_edit', pk=pk)
+
+        # Process uploads
+        images = request.FILES.getlist('images')
+        if not images:
+            error_msg = "Please select at least one image"
+            if is_ajax:
+                return JsonResponse({'success': False, 'error': error_msg}, status=400)
+            messages.error(request, error_msg)
+            return redirect('memorials:memorial_edit', pk=pk)
+
+        remaining_slots = max_images - current_count
+        images_to_upload = images[:remaining_slots]
+        skipped_count = len(images) - len(images_to_upload)
+        
+        new_images = []
+        for image in images_to_upload:
+            # Upload to Cloudinary
+            upload_result = cloudinary.uploader.upload(
+                image,
+                folder=f"memorials/{memorial.id}/gallery",
+                use_filename=True,
+                unique_filename=False,
+                overwrite=False
+            )
+            
+            # Create gallery image
+            gallery_image = GalleryImage.objects.create(
+                memorial=memorial,
+                image=upload_result['secure_url'],  # Use secure_url instead of public_id
+                order=memorial.gallery.count() + 1
+            )
+            new_images.append({
+                'id': gallery_image.id,
+                'url': gallery_image.image,  # This is now the full URL
+                'caption': gallery_image.caption or ''
+            })
+
+        # Prepare response
+        response_data = {
+            'success': True,
+            'new_images': new_images,
+            'message': f"Successfully uploaded {len(new_images)} images"
+        }
+        
+        if skipped_count > 0:
+            response_data['message'] += f" ({skipped_count} skipped)"
+
+        if is_ajax:
+            return JsonResponse(response_data)
+            
+        messages.success(request, response_data['message'])
+        return redirect('memorials:memorial_edit', pk=pk)
+        
+    except Exception as e:
+        error_msg = f"Error uploading images: {str(e)}"
+        if is_ajax:
+            return JsonResponse({'success': False, 'error': error_msg}, status=500)
+        messages.error(request, error_msg)
+        return redirect('memorials:memorial_edit', pk=pk)
+   
+
+
+@login_required
+def delete_gallery_image(request, memorial_id, image_id):
+    """View for deleting gallery images"""
+    if request.method == 'POST':
+        image = get_object_or_404(
+            GalleryImage,
+            id=image_id,
+            memorial__id=memorial_id
+        )
+
+        if image.memorial.user != request.user:
+            messages.error(
+                request,
+                "You don't have permission to delete this image."
+            )
+            return redirect('memorials:memorial_detail', pk=memorial_id)
+
+        public_id = image.image.public_id
+        if public_id:
+            destroy(public_id)
+
+        image.delete()
+        messages.success(request, "Image deleted successfully.")
+        return redirect('memorials:memorial_edit', pk=memorial_id)
+
+    messages.error(request, "Invalid request.")
+    return redirect('memorials:memorial_edit', pk=memorial_id)

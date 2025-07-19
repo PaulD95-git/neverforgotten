@@ -126,3 +126,14 @@ class Tribute(models.Model):
 
     def __str__(self):
         return f"Tribute by {self.author_name} for {self.memorial}"
+
+
+class GalleryImage(models.Model):
+    """Model for memorial gallery images."""
+    memorial = models.ForeignKey(Memorial, on_delete=models.CASCADE, related_name='gallery')
+    image = CloudinaryField('image')
+    caption = models.CharField(max_length=255, blank=True, null=True)
+    order = models.PositiveIntegerField(default=0)
+
+    def __str__(self):
+        return f"Image for {self.memorial}"

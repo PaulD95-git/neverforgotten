@@ -89,5 +89,16 @@ urlpatterns = [
         get_tributes,
         name='get_tributes',
     ),
+    # Gallery Management
+    path(
+        'memorials/<int:pk>/upload-gallery/',
+        views.upload_gallery_images,
+        name='upload_gallery_images',
+    ),
+    path(
+        '<int:memorial_id>/gallery/<int:image_id>/delete/',
+        views.delete_gallery_image,
+        name='delete_gallery_image',
+    ),
 
 ]
