@@ -137,3 +137,20 @@ class GalleryImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.memorial}"
+
+
+class Story(models.Model):
+    """Model for longer memorial stories."""
+    memorial = models.ForeignKey(Memorial, related_name='stories', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True)
+    author_name = models.CharField(max_length=100)
+    title = models.CharField(max_length=200)
+    content = models.TextField()
+    created_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name_plural = "Stories"
+
+    def __str__(self):
+        return f"Story: {self.title} by {self.author_name}"

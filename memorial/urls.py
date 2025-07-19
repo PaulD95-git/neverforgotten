@@ -20,6 +20,10 @@ from .views import (
     delete_tribute,
     edit_tribute,
     get_tributes,
+    get_stories,
+    create_story,
+    edit_story,
+    delete_story,
 )
 
 app_name = 'memorials'
@@ -100,5 +104,25 @@ urlpatterns = [
         views.delete_gallery_image,
         name='delete_gallery_image',
     ),
-
+    # Story URLs
+    path(
+        'memorials/<int:pk>/stories/create/',
+        create_story,
+        name='create_story',
+    ),
+    path(
+        'memorials/stories/<int:pk>/edit/',
+        edit_story,
+        name='edit_story',
+    ),
+    path(
+        'memorials/stories/<int:pk>/delete/',
+        delete_story,
+        name='delete_story',
+    ),
+    path(
+        'memorials/<int:pk>/stories/',
+        get_stories,
+        name='get_stories',
+    ),
 ]

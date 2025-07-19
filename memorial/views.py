@@ -814,3 +814,219 @@ def delete_gallery_image(request, memorial_id, image_id):
 
     messages.error(request, "Invalid request.")
     return redirect('memorials:memorial_edit', pk=memorial_id)
+
+
+# ---------------------------
+# Story Views
+# ---------------------------
+
+@require_POST
+@login_required
+def create_story(request, pk):
+    """AJAX endpoint for creating stories"""
+    memorial = get_object_or_404(Memorial, pk=pk)
+    
+    author_name = request.POST.get('author_name', '').strip()
+    title = request.POST.get('title', '').strip()
+    content = request.POST.get('content', '').strip()
+
+    if not author_name:
+        return JsonResponse(
+            {'success': False, 'error': 'Name is required'},
+            status=400
+        )
+    if not title:
+        return JsonResponse(
+            {'success': False, 'error': 'Title is required'},
+            status=400
+        )
+    if not content:
+        return JsonResponse(
+            {'success': False, 'error': 'Content is required'},
+            status=400
+        )
+    if len(content) > 5000:
+        return JsonResponse(
+            {'success': False, 'error': 'Story is too long'},
+            status=400
+        )
+
+    try:
+        story = memorial.stories.create(
+            user=request.user,
+            author_name=author_name,
+            title=title,
+            content=content
+        )
+        
+        can_edit = (
+            request.user == memorial.user or
+            request.user == story.user
+        )
+        
+        return JsonResponse({
+            'success': True,
+            'story': {
+                'id': story.id,
+                'author_name': story.author_name,
+                'title': story.title,
+                'content': story.content,
+                'created_at': story.created_at.strftime("%b %d, %Y")
+            },
+            'can_edit': can_edit
+        })
+        
+    except Exception as e:
+        return JsonResponse(
+            {'success': False, 'error': str(e)},
+            status=500
+        )
+
+@require_POST
+@login_required
+def edit_story(request, pk):
+    """AJAX endpoint for editing stories"""
+    try:
+        story = Story.objects.get(id=pk)
+        is_owner = request.user == story.memorial.user
+        is_author = request.user == story.user
+        
+        if not is_owner and not is_author:
+            return JsonResponse(
+                {'success': False, 'error': 'Permission denied'},
+                status=403
+            )
+        
+        author_name = request.POST.get('author_name', '').strip()
+        title = request.POST.get('title', '').strip()
+        content = request.POST.get('content', '').strip()
+
+        if not all([author_name, title, content]):
+            return JsonResponse(
+                {'success': False, 'error': 'All fields are required'},
+                status=400
+            )
+        if len(content) > 5000:
+            return JsonResponse(
+                {'success': False, 'error': 'Story too long'},
+                status=400
+            )
+
+        story.author_name = author_name
+        story.title = title
+        story.content = content
+        story.save()
+        
+        return JsonResponse({
+            'success': True,
+            'story': {
+                'id': story.id,
+                'author_name': story.author_name,
+                'title': story.title,
+                'content': story.content,
+                'created_at': story.created_at.strftime("%b %d, %Y")
+            },
+            'can_edit': True
+        })
+    except Story.DoesNotExist:
+        return JsonResponse(
+            {'success': False, 'error': 'Story not found'},
+            status=404
+        )
+
+@require_POST
+@login_required
+def delete_story(request, pk):
+    """AJAX endpoint for deleting stories"""
+    try:
+        story = Story.objects.get(id=pk)
+        memorial_id = story.memorial.id
+
+        if (request.user != story.memorial.user and
+                request.user != story.user):
+            return JsonResponse(
+                {'success': False, 'error': 'Permission denied'},
+                status=403
+            )
+
+        story.delete()
+        return JsonResponse(
+            {'success': True, 'memorial_id': memorial_id}
+        )
+    except Story.DoesNotExist:
+        return JsonResponse(
+            {'success': False, 'error': 'Story not found'},
+            status=404
+        )
+
+def get_stories(request, pk):
+    """AJAX endpoint for loading more stories"""
+    memorial = get_object_or_404(Memorial, pk=pk)
+    offset = int(request.GET.get('offset', 0))
+    limit = 3
+
+    stories = memorial.stories.all().order_by('-created_at')[offset:offset+limit]
+
+    return JsonResponse({
+        'stories': [{
+            'id': s.id,
+            'author_name': s.author_name,
+            'title': s.title,
+            'content': s.content,
+            'created_at': s.created_at.strftime("%b %d, %Y")
+        } for s in stories],
+        'is_owner': request.user == memorial.user
+    })
+
+# ---------------------------
+# Browse and Search Views
+# ---------------------------
+
+def browse_memorials(request):
+    """View for browsing and searching memorials"""
+    memorials_list = Memorial.objects.all().order_by('-created_at')
+    search_query = None
+    search_results = False
+    
+    if request.method == 'GET':
+        first_name = request.GET.get('first_name', '').strip()
+        middle_name = request.GET.get('middle_name', '').strip()
+        last_name = request.GET.get('last_name', '').strip()
+        date_of_birth = request.GET.get('date_of_birth', '').strip()
+        date_of_death = request.GET.get('date_of_death', '').strip()
+        
+        if any([first_name, middle_name, last_name, date_of_birth, date_of_death]):
+            search_results = True
+            query = Q()
+            
+            if first_name:
+                query &= Q(first_name__icontains=first_name)
+            if middle_name:
+                query &= Q(middle_name__icontains=middle_name)
+            if last_name:
+                query &= Q(last_name__icontains=last_name)
+            if date_of_birth:
+                query &= Q(date_of_birth=date_of_birth)
+            if date_of_death:
+                query &= Q(date_of_death=date_of_death)
+                
+            memorials_list = memorials_list.filter(query)
+            search_query = {
+                'first_name': first_name,
+                'middle_name': middle_name,
+                'last_name': last_name,
+                'date_of_birth': date_of_birth,
+                'date_of_death': date_of_death,
+            }
+    
+    paginator = Paginator(memorials_list, 9)
+    page_number = request.GET.get('page')
+    memorials = paginator.get_page(page_number)
+    
+    context = {
+        'memorials': memorials,
+        'search_query': search_query,
+        'search_results': search_results,
+    }
+    
+    return render(request, 'memorials/browse.html', context)
