@@ -501,6 +501,34 @@
       </div>
     </div>
   </div>
+
+    <!-- Music Upload Modal -->
+  <div class="modal fade" id="musicEditModal" tabindex="-1" 
+       aria-labelledby="musicEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form method="POST" action="{% url 'memorials:upload_audio' memorial.pk %}" 
+              enctype="multipart/form-data">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="musicEditModalLabel">Upload Memorial Music</h5>
+            <button type="button" class="btn-close" 
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <input type="file" name="audio_file" accept="audio/mpeg" 
+                   class="form-control" required>
+            <div class="form-text mt-2">Only MP3 files allowed. Max size ~10MB.</div>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Upload</button>
+            <button type="button" class="btn btn-secondary" 
+                    data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   
 {% endblock %}
 

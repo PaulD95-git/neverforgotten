@@ -626,3 +626,31 @@ def get_tributes(request, pk):
         } for t in tributes],
         'is_owner': request.user == memorial.user
     })
+
+@login_required
+def upload_audio(request, pk):
+    """View for uploading audio files to Cloudinary"""
+    memorial = get_object_or_404(Memorial, pk=pk, user=request.user)
+    
+    if request.method == 'POST' and 'audio_file' in request.FILES:
+        audio_file = request.FILES['audio_file']
+        
+        try:
+            if memorial.audio_public_id:
+                destroy(memorial.audio_public_id, resource_type="video")
+            
+            upload_result = upload(
+                audio_file,
+                folder=f"memorials/{memorial.id}/audio",
+                resource_type="video"
+            )
+            
+            memorial.audio_file = upload_result['secure_url']
+            memorial.audio_public_id = upload_result['public_id']
+            memorial.save()
+            
+            messages.success(request, "Audio file updated successfully!")
+        except Exception as e:
+            messages.error(request, f"Error updating audio: {str(e)}")
+    
+    return redirect('memorials:memorial_edit', pk=memorial.id)
