@@ -41,13 +41,18 @@ from .models import Memorial, Story, GalleryImage, Tribute
 
 def index(request):
     """Homepage view showing recent memorials"""
-    return render(request, 'memorials/index.html')
+    recent_memorials = Memorial.objects.all().order_by('-created_at')[:6]
+    context = {
+        'recent_memorials': recent_memorials,
+    }
+    return render(request, 'index.html', context)
 
 
 def plans(request):
     """Display available memorial plans"""
     plans = Plan.objects.all()
     return render(request, 'plans.html', {'plans': plans})
+
 
 # ---------------------------
 # Memorial CRUD Views

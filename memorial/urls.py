@@ -6,7 +6,7 @@ from .views import (
     index, MemorialCreateView, MemorialEditView, MyAccountView, update_name,
     update_dates, update_banner, update_quote, memorial_detail, edit_tribute,
     delete_tribute, create_tribute, get_tributes, create_story, edit_story,
-    delete_story, get_stories, UpgradeMemorialView, update_biography,
+    delete_story, get_stories, UpgradeMemorialView, update_biography, plans
 )
 
 app_name = 'memorials'
@@ -14,6 +14,7 @@ app_name = 'memorials'
 urlpatterns = [
     # Basic Pages
     path('', index, name='index'),
+    path('plans/', plans, name='plans'),
 
 
     # Memorial CRUD Operations
