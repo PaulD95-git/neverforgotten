@@ -13,6 +13,8 @@ from .views import (
     UpgradeMemorialView,
     update_name,
     update_dates,
+    update_biography,
+    update_quote,
 )
 
 app_name = 'memorials'
@@ -51,5 +53,16 @@ urlpatterns = [
         update_dates,
         name='update_dates',
     ),
+
+     path(
+        'memorials/<int:pk>/update-quote/',
+        update_quote,
+        name='update_quote',
+    ),
+    path(
+        'memorials/<int:pk>/update-biography/',
+        update_biography,
+        name='update_biography',
+    )
 
 ]

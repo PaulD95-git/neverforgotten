@@ -425,3 +425,49 @@ def update_dates(request, pk):
             {'status': 'error', 'message': str(e)},
             status=400
         )
+
+@require_POST
+@login_required
+def update_quote(request, pk):
+    """AJAX endpoint for updating memorial quote"""
+    memorial = get_object_or_404(Memorial, pk=pk, user=request.user)
+    
+    try:
+        if request.content_type == 'application/json':
+            data = json.loads(request.body)
+            quote = data.get('quote', '').strip()
+        else:
+            quote = request.POST.get('quote', '').strip()
+
+        memorial.quote = quote
+        memorial.save()
+
+        return JsonResponse({
+            'status': 'success',
+            'quote': memorial.quote,
+            'message': 'Quote updated successfully'
+        })
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=400)
+
+@require_POST
+@login_required
+def update_biography(request, pk):
+    """AJAX endpoint for updating memorial biography"""
+    try:
+        memorial = get_object_or_404(Memorial, pk=pk, user=request.user)
+        biography = request.POST.get('biography', '')
+        memorial.biography = biography
+        memorial.save()
+        return JsonResponse({
+            'success': True,
+            'biography': biography.replace('\n', '<br>')
+        })
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'error': str(e)
+        }, status=400)

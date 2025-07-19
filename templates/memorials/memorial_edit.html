@@ -191,6 +191,108 @@
       </a>
     </div>
   {% endif %}
+
+    <!-- Editable Quote Section -->
+  <div class="quote-container container text-center mt-3">
+    <p id="editable-quote" class="editable-field" 
+       data-bs-toggle="modal" data-bs-target="#quoteEditModal">
+      {% if memorial.quote %}
+        {{ memorial.quote }}
+      {% else %}
+        In Loving Memory of {{ memorial.first_name }}
+      {% endif %}
+      <i class="fas fa-edit ms-2" style="font-size: 0.8em; opacity: 0.6;"></i>
+    </p>
+  </div>
+
+  <!-- Quote Edit Modal -->
+  <div class="modal fade" id="quoteEditModal" tabindex="-1" 
+       aria-labelledby="quoteEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <form id="quote-edit-form" method="POST" 
+              action="{% url 'memorials:memorial_edit' memorial.pk %}">
+          {% csrf_token %}
+          <div class="modal-header">
+            <h5 class="modal-title" id="quoteEditModalLabel">Edit Quote</h5>
+            <button type="button" class="btn-close" 
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <textarea name="quote" rows="3" class="form-control" 
+                      placeholder='"In Loving Memory of {{ memorial.first_name }}"'>
+              {{ memorial.quote }}
+            </textarea>
+          </div>
+          <div class="modal-footer">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <button type="button" class="btn btn-secondary" 
+                    data-bs-dismiss="modal">Cancel</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <!-- Biography Section -->
+  <div class="biography-container container text-center mt-4">
+    <h2 class="biography-title">Remembering {{ memorial.first_name }}</h2>
+    <div id="editable-biography" class="editable-field mt-3" 
+         data-bs-toggle="modal" data-bs-target="#biographyEditModal" 
+         style="cursor:pointer;">
+      {% if memorial.biography %}
+        {{ memorial.biography|linebreaksbr }}
+      {% else %}
+        <p class="text-muted">
+          <em>Click here to share {{ memorial.first_name }}'s life story - their birth, 
+          family, accomplishments, personality, and what they meant to you. This will 
+          be displayed at the top of the memorial.</em>
+        </p>
+      {% endif %}
+      <small class="text-muted d-block mt-2">
+        <i class="fas fa-edit"></i> Edit biography
+      </small>
+    </div>
+  </div>
+
+  <!-- Biography Edit Modal -->
+  <div class="modal fade" id="biographyEditModal" tabindex="-1" 
+       aria-labelledby="biographyEditModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+      <div class="modal-content">
+        <form id="biography-edit-form" method="POST" 
+              action="{% url 'memorials:update_biography' memorial.pk %}">
+          {% csrf_token %}
+          <div class="modal-header bg-light">
+            <h5 class="modal-title" id="biographyEditModalLabel">Edit Biography</h5>
+            <button type="button" class="btn-close" 
+                    data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+            <textarea name="biography" rows="8" class="form-control" 
+                      placeholder="Share {{ memorial.first_name }}'s life story here... 
+                      
+• When and where they were born
+• Their family relationships
+• Education and career
+• Hobbies and passions
+• Special memories or qualities
+• What they meant to their loved ones">
+              {{ memorial.biography }}
+            </textarea>
+            <div class="form-text mt-2">
+              This biography will appear at the top of the memorial page.
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" 
+                    data-bs-dismiss="modal">Cancel</button>
+            <button type="submit" class="btn btn-primary">Save Biography</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   
 {% endblock %}
 
@@ -395,6 +497,49 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(() => alert("Link copied to clipboard!"))
         .catch(() => alert("Couldn't copy the link. Please try manually."));
     }
+  });
+</script>
+<script>
+  // Submit Quote via AJAX
+  document.getElementById("quote-edit-form").addEventListener("submit", function(e) {
+    e.preventDefault();
+
+    const formData = new FormData(this);
+
+    fetch(`/memorials/${memorialId}/update-quote/`, {
+      method: "POST",
+      headers: {
+        'X-CSRFToken': csrfToken,
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: formData
+    })
+    .then(res => res.json())
+    .then(data => {
+      if (data.status === "success") {
+        // Update quote display
+        const quoteField = document.getElementById("editable-quote");
+        quoteField.innerHTML = `
+          ${data.quote ? data.quote : 'In "Loving Memory of {{ memorial.first_name }}"'}
+          <i class="fas fa-edit ms-2" style="font-size: 0.6em; opacity: 0.7;"></i>
+        `;
+
+        // Close the modal and clean up
+        const quoteModal = bootstrap.Modal.getInstance(document.getElementById('quoteEditModal'));
+        if (quoteModal) {
+          quoteModal.hide();
+          quoteModal._element.addEventListener('hidden.bs.modal', removeModalBackdrop);
+        } else {
+          removeModalBackdrop();
+        }
+      } else {
+        alert("Failed to update quote.");
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      removeModalBackdrop();
+    });
   });
 </script>
 {% endblock %}
