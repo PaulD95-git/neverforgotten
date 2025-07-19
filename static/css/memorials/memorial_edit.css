@@ -1,0 +1,127 @@
+/* ==================== */
+/* === BANNER STYLES === */
+/* ==================== */
+.banner {
+  width: 100%;
+  max-width: 100vw;
+  margin: 0;
+  position: relative;
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-start;
+  padding: 1rem;
+  background-size: cover;
+  color: #fff;
+  font-family: sans-serif;
+  background-color: #f7e8c9;
+  height: 300px;
+  background-position: center;
+  transition: background-image 0.3s ease;
+}
+
+.banner-default {
+  background-color: #f7e8c9;
+}
+
+.banner-image {
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+}
+
+.banner-color {
+  background-color: #f7e8c9;
+}
+
+.banner-change-btn {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  z-index: 10;
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.banner-change-btn:hover {
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+.banner-modal {
+  position: absolute;
+  top: 50px;
+  left: 10px;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  padding: 1rem;
+  z-index: 1000;
+  width: 250px;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.banner-modal p {
+  margin-bottom: 0.5rem;
+  font-weight: bold;
+  color: #333;
+}
+
+.banner-options {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.banner-option[data-type="color"] {
+  background-color: #f7e8c9;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  height: 40px;
+  cursor: pointer;
+}
+
+.banner-option[data-type="image"] {
+  width: 50%;
+  height: 50px;
+  object-fit: cover;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: border 0.2s ease;
+}
+
+.banner-option[data-type="image"]:hover,
+.banner-option[data-type="color"]:hover {
+  border-color: #555;
+}
+
+#closeBannerModal {
+  background: transparent;
+  color: #555;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  text-decoration: underline;
+}
+
+.selectable-banner {
+  width: 80px;
+  height: 40px;
+  cursor: pointer;
+  object-fit: cover;
+  border: 2px solid transparent;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.selectable-banner:hover {
+  border-color: #d97b37;
+  transform: scale(1.05);
+}

@@ -2,6 +2,10 @@
 from datetime import datetime
 from urllib.parse import urlencode
 import json
+from django.http import JsonResponse
+
+# Django Imports
+from django.views.decorators.http import require_POST
 
 # Django Core
 from django import forms
@@ -241,3 +245,50 @@ def edit_profile(request):
         'account/edit_profile.html',
         {'form': form}
     )
+
+
+@require_POST
+@login_required
+def update_banner(request, pk):
+    """AJAX endpoint for updating memorial banner"""
+    try:
+        memorial = Memorial.objects.get(pk=pk, user=request.user)
+        
+        banner_type = request.POST.get('banner_type')
+        banner_value = request.POST.get('banner_value')
+        
+        if not banner_type or not banner_value:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Missing required fields'
+            }, status=400)
+        
+        if banner_type not in ['image', 'color']:
+            return JsonResponse({
+                'status': 'error',
+                'message': 'Invalid banner type'
+            }, status=400)
+        
+        if banner_type == 'image' and banner_value.startswith('/static/'):
+            banner_value = banner_value.replace('/static/', '')
+        
+        memorial.banner_type = banner_type
+        memorial.banner_value = banner_value
+        memorial.save()
+        
+        return JsonResponse({
+            'status': 'success',
+            'banner_type': banner_type,
+            'banner_value': banner_value
+        })
+        
+    except Memorial.DoesNotExist:
+        return JsonResponse({
+            'status': 'error',
+            'message': 'Memorial not found'
+        }, status=404)
+    except Exception as e:
+        return JsonResponse({
+            'status': 'error',
+            'message': str(e)
+        }, status=500)

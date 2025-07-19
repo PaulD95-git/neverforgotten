@@ -9,7 +9,7 @@ from .views import (
     delete_memorial,
     MyAccountView,
     edit_profile,
-    UpgradeMemorialView
+    UpgradeMemorialView,
 )
 
 app_name = 'memorials'
