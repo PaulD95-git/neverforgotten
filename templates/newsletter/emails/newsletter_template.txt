@@ -1,0 +1,14 @@
+Hello {% if subscriber.first_name %}{{ subscriber.first_name }}{% else %}Subscriber{% endif %},
+
+{{ newsletter.content|striptags }}
+
+NeverForgotten Updates:
+- New memorial features
+- Community stories
+- Special announcements
+
+If you no longer wish to receive these emails, unsubscribe here:
+{{ unsubscribe_url }}
+
+Thank you,
+The NeverForgotten Team

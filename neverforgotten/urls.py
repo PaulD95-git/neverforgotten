@@ -11,6 +11,9 @@ urlpatterns = [
     path('', include('memorial.urls')),  
 
     path('plans/', include('plans.urls')),
+
+    # Newsletter app with namespace
+    path('newsletter/', include('newsletter.urls', namespace='newsletter')),
 ]
 
 if settings.DEBUG:

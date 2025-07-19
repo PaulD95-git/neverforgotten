@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ newsletter.subject }}</title>
+    <style type="text/css">
+        /* Base Styles */
+        body {
+            font-family: 'Arial', sans-serif;
+            line-height: 1.6;
+            color: #333333;
+            background-color: #f7f7f7;
+            margin: 0;
+            padding: 0;
+        }
+        
+        /* Email Container */
+        .email-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: #ffffff;
+        }
+        
+        /* Header */
+        .header {
+            background-color: #d97b37; /* Your brand orange */
+            padding: 30px 20px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            color: white;
+            margin: 0;
+            font-size: 24px;
+        }
+        
+        /* Content */
+        .content {
+            padding: 30px 20px;
+        }
+        
+        .content h2 {
+            color: #d97b37;
+            font-size: 20px;
+            margin-top: 0;
+        }
+        
+        .content p {
+            margin-bottom: 20px;
+        }
+        
+        /* Features List */
+        .features {
+            background: #f9f9f9;
+            border-left: 4px solid #d97b37;
+            padding: 15px 20px;
+            margin: 20px 0;
+        }
+        
+        .features ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+        
+        /* Footer */
+        .footer {
+            background-color: #eeeeee;
+            padding: 20px;
+            text-align: center;
+            font-size: 12px;
+            color: #777777;
+        }
+        
+        .footer a {
+            color: #d97b37;
+            text-decoration: none;
+        }
+        
+        /* Button */
+        .cta-button {
+            display: inline-block;
+            background-color: #d97b37;
+            color: white !important;
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 4px;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+        
+        /* Responsive */
+        @media screen and (max-width: 480px) {
+            .header {
+                padding: 20px 15px;
+            }
+            .content {
+                padding: 20px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <!-- Header -->
+        <div class="header">
+            <h1>NeverForgotten Memorials</h1>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="content">
+            <h2>Hello {% if subscriber.first_name %}{{ subscriber.first_name }}{% else %}Subscriber{% endif %},</h2>
+            
+            <div>
+                {{ newsletter.content|safe }}
+            </div>
+            
+            <div class="features">
+                <h3>In this newsletter:</h3>
+                <ul>
+                    <li>New memorial features</li>
+                    <li>Community stories</li>
+                    <li>Special announcements</li>
+                </ul>
+            </div>
+            
+            {% if cta_link %}
+            <a href="{{ cta_link }}" class="cta-button">
+                {{ cta_text|default:"Learn More" }}
+            </a>
+            {% endif %}
+        </div>
+        
+        <!-- Footer -->
+        <div class="footer">
+            <p>
+                &copy; {% now "Y" %} NeverForgotten Memorials. All rights reserved.<br>
+                <a href="{{ unsubscribe_url }}">Unsubscribe</a> from these emails.
+            </p>
+            <p>
+                Our address: 123 Memorial Lane, City, Country
+            </p>
+        </div>
+    </div>
+</body>
+</html>

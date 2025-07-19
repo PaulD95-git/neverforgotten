@@ -1,0 +1,114 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="form-wrapper">
+  <div class="form-container">
+    <div class="text-center mb-4">
+      <h2 class="login-title">Unsubscribe from Newsletter</h2>
+      <p class="login-subtitle">We're sorry to see you go</p>
+    </div>
+    
+    <div class="text-center mb-4">
+      <p>Are you sure you want to unsubscribe <strong>{{ email }}</strong> from our newsletter?</p>
+      <p class="text-muted">You'll no longer receive updates about memorials and special occasions.</p>
+    </div>
+    
+    <form method="post">
+      {% csrf_token %}
+      <div class="d-flex justify-content-center gap-3">
+        <button type="submit" class="btn btn-danger py-2 px-4">
+          <i class="fas fa-envelope-slash me-2"></i> Yes, Unsubscribe
+        </button>
+        <a href="{% url 'memorials:index' %}" class="btn btn-secondary py-2 px-4">
+          <i class="fas fa-times me-2"></i> Cancel
+        </a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<style>
+  .form-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 4rem);
+    padding: 2rem;
+    background-color: rgba(255, 249, 230, 0.97);
+  }
+
+  .form-container {
+    background-color: #fff;
+    width: 100%;
+    max-width: 500px;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    text-align: center;
+  }
+
+  .login-title {
+    font-family: 'Lora', serif;
+    font-weight: 700;
+    font-size: 2rem;
+    color: #3e2f1c;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+  }
+
+  .login-subtitle {
+    color: #6c757d;
+    font-size: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .btn-danger {
+    background-color: #dc3545;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-danger:hover {
+    background-color: #bb2d3b;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.4);
+  }
+
+  .btn-secondary {
+    background-color: #6c757d;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    transition: all 0.3s ease;
+  }
+
+  .btn-secondary:hover {
+    background-color: #5c636a;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 15px rgba(108, 117, 125, 0.4);
+  }
+
+  @media (max-width: 576px) {
+    .form-container {
+      padding: 1.5rem;
+    }
+    
+    .login-title {
+      font-size: 1.75rem;
+    }
+    
+    .d-flex {
+      flex-direction: column;
+      gap: 1rem !important;
+    }
+    
+    .btn {
+      width: 100%;
+    }
+  }
+</style>
+{% endblock %}
