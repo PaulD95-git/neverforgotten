@@ -70,8 +70,124 @@
       <button id="closeBannerModal">Cancel</button>
     </div>
   </div>
+
+
+  <!-- Profile Picture Upload Form -->
+  <form method="POST" enctype="multipart/form-data" 
+        id="pfpUploadForm" action="{% url 'memorials:upload_profile_picture' memorial.pk %}">
+    {% csrf_token %}
+    <div class="profile-pic-wrapper upload-wrapper" title="Click to change profile picture">
+      {% if memorial.profile_public_id %}
+        <img src="https://res.cloudinary.com/neverforgotten/image/upload/{{ memorial.profile_public_id }}.png?{% now 'U' %}" 
+             alt="Profile Picture of {{ memorial.first_name }}" 
+             data-original-src="https://res.cloudinary.com/neverforgotten/image/upload/{{ memorial.profile_public_id }}.png">
+      {% else %}
+        <img src="{% static 'images/nf.png' %}" 
+             alt="Default memorial image" 
+             data-original-src="{% static 'images/nf.png' %}">
+      {% endif %}
+      <input type="file" name="profile_picture" id="profilePictureInput" 
+             accept="image/*" style="display:none;">
+      <div class="upload-icon"><i class="fas fa-edit"></i></div>
+    </div>
+  </form>
+
+  
 {% endblock %}
 
 {% block extra_js %}
 <script src="{% static 'js/memorials/memorial_edit.js' %}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const form = document.getElementById('pfpUploadForm');
+  const uploadWrapper = document.querySelector('.profile-pic-wrapper');
+  const profileImg = uploadWrapper.querySelector('img');
+  const fileInput = document.getElementById('profilePictureInput');
+  const uploadIcon = document.querySelector('.upload-icon');
+  
+  // Store original clean URL (without parameters)
+  profileImg.dataset.originalSrc = profileImg.src.split('?')[0];
+
+  // Create loading spinner
+  const spinner = document.createElement('div');
+  spinner.className = 'pfp-loading-spinner';
+  spinner.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+  spinner.style.display = 'none';
+  uploadWrapper.appendChild(spinner);
+
+  // Handle click on wrapper
+  uploadWrapper.addEventListener('click', function(e) {
+    if (!e.target.matches('input')) {
+      fileInput.click();
+    }
+  });
+
+  // Handle file selection
+  fileInput.addEventListener('change', function() {
+    if (!this.files || !this.files[0]) return;
+
+    // Show loading state
+    spinner.style.display = 'block';
+    uploadIcon.style.visibility = 'hidden';
+    profileImg.style.opacity = '0.7';
+    uploadWrapper.style.cursor = 'wait';
+
+    // Preview image immediately
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      profileImg.src = e.target.result;
+    };
+    reader.readAsDataURL(this.files[0]);
+
+    // Prepare form data
+    const formData = new FormData(form);
+    
+    // AJAX upload
+    fetch(form.action, {
+      method: 'POST',
+      headers: {
+        'X-CSRFToken': form.querySelector('[name=csrfmiddlewaretoken]').value,
+        'X-Requested-With': 'XMLHttpRequest'
+      },
+      body: formData
+    })
+    .then(response => {
+      if (!response.ok) throw new Error('Network response was not ok');
+      return response.json();
+    })
+    .then(data => {
+      if (data.status === 'success') {
+        // Update with the clean URL from server
+        profileImg.src = data.profile_picture_url;
+        profileImg.dataset.originalSrc = data.profile_picture_url;
+        
+        // Show success message
+        const successMsg = document.createElement('div');
+        successMsg.className = 'upload-success-message';
+        successMsg.textContent = data.message;
+        uploadWrapper.appendChild(successMsg);
+        
+        // Remove message after 3 seconds
+        setTimeout(() => successMsg.remove(), 3000);
+      } else {
+        throw new Error(data.message || 'Upload failed');
+      }
+    })
+    .catch(error => {
+      console.error('Error:', error);
+      // Revert to original image
+      profileImg.src = profileImg.dataset.originalSrc;
+      alert('Error: ' + error.message);
+    })
+    .finally(() => {
+      // Reset UI
+      spinner.style.display = 'none';
+      uploadIcon.style.visibility = 'visible';
+      profileImg.style.opacity = '1';
+      uploadWrapper.style.cursor = 'pointer';
+      fileInput.value = '';
+    });
+  });
+});
+</script>
 {% endblock %}

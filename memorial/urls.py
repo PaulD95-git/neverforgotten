@@ -1,6 +1,7 @@
 # memorial/urls.py
 from django.urls import path
 from django.contrib.auth.views import LogoutView
+from . import views
 from .views import (
     index,
     MemorialCreateView,
@@ -31,5 +32,12 @@ urlpatterns = [
 
     # Upgrade Memorial
     path('<int:pk>/upgrade/', UpgradeMemorialView.as_view(), name='upgrade'),
+
+    # Memorial Media Updates
+    path(
+        '<int:pk>/upload-profile-picture/',
+        views.upload_profile_picture,
+        name='upload_profile_picture',
+    ),
 
 ]

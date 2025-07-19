@@ -292,3 +292,58 @@ def update_banner(request, pk):
             'status': 'error',
             'message': str(e)
         }, status=500)
+    
+
+@login_required
+def upload_profile_picture(request, pk):
+    """View for uploading profile pictures to Cloudinary"""
+    memorial = get_object_or_404(Memorial, pk=pk, user=request.user)
+
+    if request.method == 'POST' and 'profile_picture' in request.FILES:
+        profile_pic = request.FILES['profile_picture']
+
+        if profile_pic.size > 5 * 1024 * 1024:
+            return JsonResponse(
+                {'status': 'error', 'message': 'Image too large (max 5MB)'},
+                status=400
+            )
+
+        if not profile_pic.content_type.startswith('image/'):
+            return JsonResponse(
+                {'status': 'error', 'message': 'Invalid file type'},
+                status=400
+            )
+
+        try:
+            if memorial.profile_picture:
+                memorial.profile_picture.delete()
+
+            upload_result = upload(
+                profile_pic,
+                folder=f"memorials/{memorial.id}/profile_pictures",
+                public_id=f"profile_{memorial.id}",
+                overwrite=True,
+                resource_type="image"
+            )
+
+            memorial.profile_public_id = upload_result['public_id']
+            memorial.profile_picture.name = upload_result['public_id']
+            memorial.save()
+
+            return JsonResponse({
+                'status': 'success',
+                'profile_picture_url': upload_result['secure_url'],
+                'public_id': upload_result['public_id'],
+                'message': 'Profile picture updated!'
+            })
+
+        except Exception as e:
+            return JsonResponse({
+                'status': 'error',
+                'message': f'Upload failed: {str(e)}'
+            }, status=500)
+
+    return JsonResponse(
+        {'status': 'error', 'message': 'Invalid request'},
+        status=400
+    )
