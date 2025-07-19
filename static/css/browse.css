@@ -1,0 +1,397 @@
+/* ===================== */
+/* BASE LAYOUT STYLES     */
+/* ===================== */
+.browse-container {
+    max-width: 1200px;
+    padding: 0 20px;
+    margin: 0 auto;
+}
+
+/* ===================== */
+/* TYPOGRAPHY STYLES      */
+/* ===================== */
+.page-title {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 2.5rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+}
+
+.page-subtitle {
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    font-size: 1.1rem;
+    font-weight: 400;
+}
+
+/* ===================== */
+/* SEARCH COMPONENT       */
+/* ===================== */
+.search-card {
+    background-color: #fffaf3;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(217, 123, 55, 0.1);
+    border: 1px solid #f7e8c9;
+    overflow: hidden;
+    margin-bottom: 2rem;
+}
+
+.search-header {
+    background-color: #f7e8c9;
+    padding: 1.2rem 2rem;
+    border-bottom: 1px solid #e8d9b5;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.search-title {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 1.4rem;
+    margin: 0;
+    font-weight: 600;
+}
+
+.search-icon {
+    color: #d97b37;
+    font-size: 1.2rem;
+}
+
+.search-body {
+    padding: 2rem;
+}
+
+/* ===================== */
+/* FORM ELEMENTS          */
+/* ===================== */
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    font-size: 0.95rem;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.input-with-icon {
+    position: relative;
+}
+
+.input-with-icon i {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #d97b37;
+}
+
+.input-with-icon .form-control {
+    padding-left: 40px;
+    height: 46px;
+    border: 1px solid #e8d9b5;
+    background-color: #fff8e1;
+    border-radius: 8px;
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    transition: all 0.3s ease;
+}
+
+.input-with-icon .form-control:focus {
+    border-color: #d97b37;
+    box-shadow: 0 0 0 0.25rem rgba(217, 123, 55, 0.15);
+}
+
+/* ===================== */
+/* BUTTON STYLES          */
+/* ===================== */
+.btn {
+    padding: 0.7rem 1.8rem;
+    border-radius: 8px;
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+    border: none;
+    cursor: pointer;
+}
+
+.search-btn {
+    background-color: #d97b37;
+    color: #fffaf3;
+}
+
+.search-btn:hover {
+    background-color: #b86528;
+    transform: translateY(-2px);
+}
+
+.reset-btn {
+    background-color: transparent;
+    color: #6c584c;
+    border: 1px solid #e8d9b5;
+}
+
+.reset-btn:hover {
+    background-color: #f7e8c9;
+    color: #3e2f1c;
+}
+
+/* ===================== */
+/* RESULTS SECTION        */
+/* ===================== */
+.results-section {
+    margin-bottom: 3rem;
+}
+
+.section-title {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 1.8rem;
+    margin-bottom: 2rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+.section-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 60px;
+    height: 3px;
+    background-color: #d97b37;
+}
+
+.no-results {
+    text-align: center;
+    padding: 3rem;
+    background-color: #fffaf3;
+    border-radius: 8px;
+    border: 1px dashed #e8d9b5;
+}
+
+.no-results i {
+    font-size: 2.5rem;
+    color: #d97b37;
+    margin-bottom: 1rem;
+}
+
+.no-results p {
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* ===================== */
+/* MEMORIAL GRID          */
+/* ===================== */
+.memorial-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    margin-bottom: 3rem;
+}
+
+.memorial-card {
+    background-color: #fffaf3;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    transition: all 0.3s ease;
+    border: 1px solid #f7e8c9;
+}
+
+.memorial-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 12px 24px rgba(217, 123, 55, 0.15);
+}
+
+.card-inner {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+/* ===================== */
+/* PROFILE IMAGE          */
+/* ===================== */
+.profile-pic-container {
+    position: relative;
+    padding: 2rem 2rem 0;
+}
+
+.profile-pic-wrapper {
+    width: 150px;
+    height: 150px;
+    margin: 0 auto;
+    border-radius: 50%;
+    overflow: hidden;
+    position: relative;
+    border: 5px solid rgba(255, 249, 230, 0.95);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.profile-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s ease;
+}
+
+.profile-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        to bottom, 
+        rgba(217, 123, 55, 0.1), 
+        rgba(217, 123, 55, 0.3)
+    );
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.memorial-card:hover .profile-overlay {
+    opacity: 1;
+}
+
+.memorial-card:hover .profile-image {
+    transform: scale(1.05);
+}
+
+/* ===================== */
+/* MEMORIAL DETAILS       */
+/* ===================== */
+.memorial-info {
+    padding: 1.5rem 2rem 2rem;
+    text-align: center;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.memorial-name {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin-bottom: 1.2rem;
+}
+
+.memorial-dates {
+    margin-bottom: 1.5rem;
+}
+
+.date-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.5rem;
+}
+
+.date-row i {
+    color: #d97b37;
+    margin-right: 0.5rem;
+    font-size: 0.9rem;
+}
+
+.date-row span {
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    font-size: 0.95rem;
+}
+
+.view-btn {
+    display: inline-block;
+    margin-top: auto;
+    padding: 0.6rem 1.5rem;
+    background-color: #d97b37;
+    color: #fffaf3;
+    border-radius: 6px;
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    text-decoration: none;
+    transition: all 0.3s ease;
+    align-self: center;
+}
+
+.view-btn:hover {
+    background-color: #b86528;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(184, 101, 40, 0.3);
+}
+
+/* ===================== */
+/* PAGINATION STYLES      */
+/* ===================== */
+.custom-pagination-container {
+    width: 100%;
+    padding: 1rem 0 2rem;
+    margin-top: 1rem;
+    display: flex;
+    justify-content: flex-end;
+}
+
+.custom-pagination {
+    display: flex;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    gap: 0.5rem;
+}
+
+.custom-page-item {
+    display: inline-block;
+}
+
+.custom-page-link {
+    display: block;
+    padding: 0.5rem 0.8rem;
+    border: 1px solid #e8d9b5;
+    border-radius: 4px;
+    color: #6c584c;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    font-family: 'Lora', serif;
+}
+
+.custom-page-link:hover {
+    background-color: #f7e8c9;
+    border-color: #d97b37;
+}
+
+.custom-page-item.active .custom-page-link {
+    background-color: #d97b37;
+    border-color: #d97b37;
+    color: white;
+}
+
+.custom-page-link i {
+    font-size: 0.9rem;
+}
+
+/* ===================== */
+/* RESPONSIVE ADJUSTMENTS */
+/* ===================== */
+@media (max-width: 768px) {
+    .custom-pagination-container {
+        justify-content: center;
+    }
+    
+    .memorial-grid {
+        grid-template-columns: 1fr;
+    }
+    
+    .search-header {
+        flex-direction: column;
+        gap: 1rem;
+    }
+}

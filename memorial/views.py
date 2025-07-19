@@ -1028,3 +1028,57 @@ def contact(request):
         form = ContactForm()
 
     return render(request, 'contact.html', {'form': form})
+
+# ---------------------------
+# Browse and Search Views
+# ---------------------------
+
+
+def browse_memorials(request):
+    """View for browsing and searching memorials"""
+    memorials_list = Memorial.objects.all().order_by('-created_at')
+    search_query = None
+    search_results = False
+    
+    if request.method == 'GET':
+        first_name = request.GET.get('first_name', '').strip()
+        middle_name = request.GET.get('middle_name', '').strip()
+        last_name = request.GET.get('last_name', '').strip()
+        date_of_birth = request.GET.get('date_of_birth', '').strip()
+        date_of_death = request.GET.get('date_of_death', '').strip()
+        
+        if any([first_name, middle_name, last_name, date_of_birth, date_of_death]):
+            search_results = True
+            query = Q()
+            
+            if first_name:
+                query &= Q(first_name__icontains=first_name)
+            if middle_name:
+                query &= Q(middle_name__icontains=middle_name)
+            if last_name:
+                query &= Q(last_name__icontains=last_name)
+            if date_of_birth:
+                query &= Q(date_of_birth=date_of_birth)
+            if date_of_death:
+                query &= Q(date_of_death=date_of_death)
+                
+            memorials_list = memorials_list.filter(query)
+            search_query = {
+                'first_name': first_name,
+                'middle_name': middle_name,
+                'last_name': last_name,
+                'date_of_birth': date_of_birth,
+                'date_of_death': date_of_death,
+            }
+    
+    paginator = Paginator(memorials_list, 9)
+    page_number = request.GET.get('page')
+    memorials = paginator.get_page(page_number)
+    
+    context = {
+        'memorials': memorials,
+        'search_query': search_query,
+        'search_results': search_results,
+    }
+    
+    return render(request, 'browse.html', context)

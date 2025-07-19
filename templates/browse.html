@@ -1,0 +1,244 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<link rel="stylesheet" href="{% static 'css/browse.css' %}">
+
+<!-- ===================== -->
+<!-- BROWSE CONTAINER -->
+<!-- ===================== -->
+<div class="container browse-container py-5">
+    
+    <!-- ===================== -->
+    <!-- PAGE HEADER SECTION -->
+    <!-- ===================== -->
+    <div class="text-center mb-5">
+        <h1 class="page-title">Browse Memorials</h1>
+        <p class="page-subtitle">Discover and remember loved ones</p>
+    </div>
+    
+    <!-- ===================== -->
+    <!-- SEARCH FORM SECTION -->
+    <!-- ===================== -->
+    <div class="search-card mb-5">
+        <div class="search-header">
+            <h2 class="search-title">Search Memorials</h2>
+            <i class="fas fa-search search-icon"></i>
+        </div>
+        <div class="search-body">
+            <form method="get" class="row g-3">
+                
+                <!-- First Name Input -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="first_name" class="form-label">First Name</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" class="form-control" id="first_name" 
+                                   name="first_name" 
+                                   value="{{ search_query.first_name|default:'' }}" 
+                                   placeholder="Enter first name">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Middle Name Input -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="middle_name" class="form-label">Middle Name</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" class="form-control" id="middle_name" 
+                                   name="middle_name" 
+                                   value="{{ search_query.middle_name|default:'' }}" 
+                                   placeholder="Enter middle name">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Last Name Input -->
+                <div class="col-md-4">
+                    <div class="form-group">
+                        <label for="last_name" class="form-label">Last Name</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-user"></i>
+                            <input type="text" class="form-control" id="last_name" 
+                                   name="last_name" 
+                                   value="{{ search_query.last_name|default:'' }}" 
+                                   placeholder="Enter last name">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Date of Birth Input -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="date_of_birth" class="form-label">Date of Birth</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-birthday-cake"></i>
+                            <input type="date" class="form-control" id="date_of_birth" 
+                                   name="date_of_birth" 
+                                   value="{{ search_query.date_of_birth|default:'' }}">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Date of Death Input -->
+                <div class="col-md-6">
+                    <div class="form-group">
+                        <label for="date_of_death" class="form-label">Date of Death</label>
+                        <div class="input-with-icon">
+                            <i class="fas fa-cross"></i>
+                            <input type="date" class="form-control" id="date_of_death" 
+                                   name="date_of_death" 
+                                   value="{{ search_query.date_of_death|default:'' }}">
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Form Actions -->
+                <div class="col-12 text-center mt-3">
+                    <button type="submit" class="btn search-btn">
+                        <i class="fas fa-search me-2"></i> Search Memorials
+                    </button>
+                    <a href="{% url 'memorials:browse' %}" class="btn reset-btn">
+                        <i class="fas fa-redo me-2"></i> Reset
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- ===================== -->
+    <!-- RESULTS SECTION -->
+    <!-- ===================== -->
+    <div class="results-section">
+        {% if search_results %}
+            <h2 class="section-title">Search Results</h2>
+            {% if not memorials %}
+                <div class="no-results">
+                    <i class="fas fa-heart-broken"></i>
+                    <p>No memorials found matching your search criteria</p>
+                </div>
+            {% endif %}
+        {% else %}
+            <h2 class="section-title">Recently Added Memorials</h2>
+        {% endif %}
+        
+        <!-- ===================== -->
+        <!-- MEMORIAL GRID -->
+        <!-- ===================== -->
+        <div class="memorial-grid">
+            {% for memorial in memorials %}
+            <div class="memorial-card">
+                <div class="card-inner">
+                    
+                    <!-- ===================== -->
+                    <!-- PROFILE PICTURE -->
+                    <!-- ===================== -->
+                    <div class="profile-pic-container">
+                        <div class="profile-pic-wrapper">
+                            {% if memorial.profile_public_id %}
+                            <img src="https://res.cloudinary.com/neverforgotten/image/upload/c_fill,g_face,h_200,w_200/{{ memorial.profile_public_id }}.png?{% now 'U' %}" 
+                                 alt="{{ memorial.first_name }} {{ memorial.last_name }}" 
+                                 class="profile-image">
+                            {% else %}
+                            <img src="{% static 'images/nf.png' %}" 
+                                 alt="Default memorial image" 
+                                 class="profile-image">
+                            {% endif %}
+                            <div class="profile-overlay"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- ===================== -->
+                    <!-- MEMORIAL INFO -->
+                    <!-- ===================== -->
+                    <div class="memorial-info">
+                        <h3 class="memorial-name">
+                            {{ memorial.first_name }}
+                            {% if memorial.middle_name %} {{ memorial.middle_name }} {% endif %}
+                            {{ memorial.last_name }}
+                        </h3>
+                        
+                        <div class="memorial-dates">
+                            <div class="date-row">
+                                <i class="fas fa-birthday-cake"></i>
+                                <span>{{ memorial.date_of_birth|date:"F j, Y" }}</span>
+                            </div>
+                            {% if memorial.date_of_death %}
+                            <div class="date-row">
+                                <i class="fas fa-cross"></i>
+                                <span>{{ memorial.date_of_death|date:"F j, Y" }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                        
+                        <a href="{% url 'memorials:memorial_detail' memorial.id %}" 
+                           class="view-btn">
+                            View Memorial <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    
+    <!-- ===================== -->
+    <!-- PAGINATION SECTION -->
+    <!-- ===================== -->
+    {% if memorials.has_other_pages %}
+    <div class="custom-pagination-container">
+        <nav aria-label="Memorials pagination">
+            <ul class="custom-pagination">
+                {% if memorials.has_previous %}
+                    <li class="custom-page-item">
+                        <a class="custom-page-link" 
+                           href="?page=1{% if search_query %}&first_name={{ search_query.first_name|default:'' }}&middle_name={{ search_query.middle_name|default:'' }}&last_name={{ search_query.last_name|default:'' }}&date_of_birth={{ search_query.date_of_birth|default:'' }}&date_of_death={{ search_query.date_of_death|default:'' }}{% endif %}">
+                            <i class="fas fa-angle-double-left"></i>
+                        </a>
+                    </li>
+                    <li class="custom-page-item">
+                        <a class="custom-page-link" 
+                           href="?page={{ memorials.previous_page_number }}{% if search_query %}&first_name={{ search_query.first_name|default:'' }}&middle_name={{ search_query.middle_name|default:'' }}&last_name={{ search_query.last_name|default:'' }}&date_of_birth={{ search_query.date_of_birth|default:'' }}&date_of_death={{ search_query.date_of_death|default:'' }}{% endif %}">
+                            <i class="fas fa-angle-left"></i>
+                        </a>
+                    </li>
+                {% endif %}
+                
+                {% for num in memorials.paginator.page_range %}
+                    {% if memorials.number == num %}
+                        <li class="custom-page-item active">
+                            <span class="custom-page-link">{{ num }}</span>
+                        </li>
+                    {% elif num > memorials.number|add:'-3' and num < memorials.number|add:'3' %}
+                        <li class="custom-page-item">
+                            <a class="custom-page-link" 
+                               href="?page={{ num }}{% if search_query %}&first_name={{ search_query.first_name|default:'' }}&middle_name={{ search_query.middle_name|default:'' }}&last_name={{ search_query.last_name|default:'' }}&date_of_birth={{ search_query.date_of_birth|default:'' }}&date_of_death={{ search_query.date_of_death|default:'' }}{% endif %}">
+                                {{ num }}
+                            </a>
+                        </li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if memorials.has_next %}
+                    <li class="custom-page-item">
+                        <a class="custom-page-link" 
+                           href="?page={{ memorials.next_page_number }}{% if search_query %}&first_name={{ search_query.first_name|default:'' }}&middle_name={{ search_query.middle_name|default:'' }}&last_name={{ search_query.last_name|default:'' }}&date_of_birth={{ search_query.date_of_birth|default:'' }}&date_of_death={{ search_query.date_of_death|default:'' }}{% endif %}">
+                            <i class="fas fa-angle-right"></i>
+                        </a>
+                    </li>
+                    <li class="custom-page-item">
+                        <a class="custom-page-link" 
+                           href="?page={{ memorials.paginator.num_pages }}{% if search_query %}&first_name={{ search_query.first_name|default:'' }}&middle_name={{ search_query.middle_name|default:'' }}&last_name={{ search_query.last_name|default:'' }}&date_of_birth={{ search_query.date_of_birth|default:'' }}&date_of_death={{ search_query.date_of_death|default:'' }}{% endif %}">
+                            <i class="fas fa-angle-double-right"></i>
+                        </a>
+                    </li>
+                {% endif %}
+            </ul>
+        </nav>
+    </div>
+    {% endif %}
+
+{% endblock %}
