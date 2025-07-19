@@ -15,7 +15,6 @@ body {
 /* ====================== */
 /* === PROFILE IMAGES === */
 /* ====================== */
-
 .profile-pic-wrapper {
   left: 50%;
   transform: translateX(-50%);
@@ -31,8 +30,8 @@ body {
 
 .profile-pic-wrapper-detail {
   position: absolute;
-  left: 50%;
   transform: translateX(-50%);
+  left: 50%;
   bottom: 475px;
   width: 200px;
   height: 200px;
@@ -116,10 +115,12 @@ body {
 .banner {
   width: 100%;
   max-width: 100vw;
+  margin: 0;
   position: relative;
   display: flex;
   justify-content: flex-end;
   align-items: flex-start;
+  padding: 1rem;
   background-size: cover;
   color: #fff;
   font-family: sans-serif;

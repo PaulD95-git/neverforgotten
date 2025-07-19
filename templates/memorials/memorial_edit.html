@@ -1,11 +1,6 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block extra_head %}
-  <!-- Memorial edit page specific CSS -->
-  <link href="{% static 'css/memorial_edit.css' %}" rel="stylesheet">
-{% endblock %}
-
 {% block title %}Edit Memorial - {{ memorial.first_name }} {{ memorial.last_name }}{% endblock %}
 
 {% block content %}
@@ -1011,10 +1006,10 @@
 
 
 {% block extra_css %}
-<link rel="stylesheet" href="{% static 'css/memorial_edit.css' %}">
+<link rel="stylesheet" href="{% static 'css/memorials/memorial_edit.css' %}">
 {% endblock %}
 {% block extra_js %}
-<script src="{% static 'js/memorial_edit.js' %}"></script>
+<script src="{% static 'js/memorials/memorial_edit.js' %}"></script>
 <script>
   const csrfToken = getCookie('csrftoken');
   const memorialId = "{{ memorial.pk }}";

@@ -1,50 +1,64 @@
-# memorial/urls.py
-from django.urls import path
 from django.contrib.auth.views import LogoutView
+from django.urls import path
 from . import views
+from django.views.generic import TemplateView
 from .views import (
-    index,
-    MemorialCreateView,
-    MemorialEditView,
-    memorial_detail,
-    delete_memorial,
-    MyAccountView,
-    edit_profile,
-    UpgradeMemorialView,
-    update_name,
-    update_dates,
-    update_biography,
-    update_quote,
-    delete_memorial,
-    create_tribute,
-    delete_tribute,
-    edit_tribute,
-    get_tributes,
-    get_stories,
-    create_story,
-    edit_story,
-    delete_story,
+    index, MemorialCreateView, MemorialEditView, MyAccountView, update_name,
+    update_dates, update_banner, update_quote, memorial_detail, edit_tribute,
+    delete_tribute, create_tribute, get_tributes, create_story, edit_story,
+    delete_story, get_stories, UpgradeMemorialView, update_biography,
 )
 
 app_name = 'memorials'
 
 urlpatterns = [
-    # Home page
+    # Basic Pages
     path('', index, name='index'),
 
+
     # Memorial CRUD Operations
-    path('memorials/create/', MemorialCreateView.as_view(), name='memorial_create'),
-    path('memorials/<int:pk>/edit/', MemorialEditView.as_view(), name='memorial_edit'),
-    path('<int:pk>/delete/', delete_memorial, name='memorial_delete'),
-    path('memorials/<int:pk>/', memorial_detail, name='memorial_detail'),
+    path(
+        'memorials/create/',
+        MemorialCreateView.as_view(),
+        name='memorial_create',
+    ),
+    path(
+        'memorials/<int:pk>/edit/',
+        MemorialEditView.as_view(),
+        name='memorial_edit',
+    ),
+    path(
+        '<int:pk>/delete/',
+        views.delete_memorial,
+        name='memorial_delete',
+    ),
+    path(
+        'memorials/<int:pk>/',
+        memorial_detail,
+        name='memorial_detail',
+    ),
 
     # User Account
-    path('account/', MyAccountView.as_view(), name='account_profile'),
-    path('account/edit/', edit_profile, name='edit_profile'),
-    path('accounts/logout/', LogoutView.as_view(next_page='memorials:index'), name='logout'),
-
-    # Upgrade Memorial
-    path('<int:pk>/upgrade/', UpgradeMemorialView.as_view(), name='upgrade'),
+    path(
+        'account/',
+        MyAccountView.as_view(),
+        name='account_profile',
+    ),
+    path(
+        'memorials/plans/',
+        views.plans,
+        name='memorial_plans',
+    ),
+    path(
+        'accounts/logout/',
+        LogoutView.as_view(next_page='home'),
+        name='logout',
+    ),
+    path(
+        'account/edit/',
+        views.edit_profile,
+        name='edit_profile',
+    ),
 
     # Memorial Media Updates
     path(
@@ -63,6 +77,11 @@ urlpatterns = [
         name='update_dates',
     ),
     path(
+        'memorials/<int:pk>/update-banner/',
+        update_banner,
+        name='update_banner',
+    ),
+    path(
         'memorials/<int:pk>/update-quote/',
         update_quote,
         name='update_quote',
@@ -72,6 +91,26 @@ urlpatterns = [
         update_biography,
         name='update_biography',
     ),
+
+    # Audio Handling
+    path(
+        '<int:pk>/upload-audio/',
+        views.upload_audio,
+        name='upload_audio',
+    ),
+
+    # Gallery Management
+    path(
+        'memorials/<int:pk>/upload-gallery/',
+        views.upload_gallery_images,
+        name='upload_gallery_images',
+    ),
+    path(
+        '<int:memorial_id>/gallery/<int:image_id>/delete/',
+        views.delete_gallery_image,
+        name='delete_gallery_image',
+    ),
+
     # Tribute URLs
     path(
         'memorials/<int:pk>/tributes/create/',
@@ -93,17 +132,7 @@ urlpatterns = [
         get_tributes,
         name='get_tributes',
     ),
-    # Gallery Management
-    path(
-        'memorials/<int:pk>/upload-gallery/',
-        views.upload_gallery_images,
-        name='upload_gallery_images',
-    ),
-    path(
-        '<int:memorial_id>/gallery/<int:image_id>/delete/',
-        views.delete_gallery_image,
-        name='delete_gallery_image',
-    ),
+
     # Story URLs
     path(
         'memorials/<int:pk>/stories/create/',
@@ -125,4 +154,12 @@ urlpatterns = [
         get_stories,
         name='get_stories',
     ),
+
+    # Upgrade Memorial
+    path(
+        'memorials/<int:pk>/upgrade/',
+        UpgradeMemorialView.as_view(),
+        name='upgrade_memorial',
+    ),
+
 ]

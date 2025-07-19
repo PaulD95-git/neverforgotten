@@ -31,9 +31,7 @@ from cloudinary.uploader import upload, destroy
 # Local Apps
 from plans.models import Plan
 from .forms import MemorialForm
-from .models import Memorial
-
-
+from .models import Memorial, Story, GalleryImage, Tribute
 
 
 # ---------------------------
@@ -45,6 +43,11 @@ def index(request):
     """Homepage view showing recent memorials"""
     return render(request, 'memorials/index.html')
 
+
+def plans(request):
+    """Display available memorial plans"""
+    plans = Plan.objects.all()
+    return render(request, 'plans.html', {'plans': plans})
 
 # ---------------------------
 # Memorial CRUD Views
