@@ -1,5 +1,5 @@
 from django import forms
-from .models import Memorial, Tribute, GalleryImage, Story
+from .models import Memorial, Tribute, GalleryImage, Story, ContactMessage
 
 
 # --- Memorial Form ---
@@ -86,3 +86,20 @@ class StoryForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['content'].widget.attrs.update({'minlength': '50'})
+
+
+# --- Contact Form ---
+class ContactForm(forms.ModelForm):
+    """Form for general website contact messages."""
+    class Meta:
+        model = ContactMessage
+        fields = ['name', 'email', 'subject', 'message']
+        widgets = {
+            'name': forms.TextInput(attrs={'placeholder': 'Your full name'}),
+            'email': forms.EmailInput(attrs={'placeholder': 'Your email address'}),
+            'subject': forms.TextInput(attrs={'placeholder': 'Message subject'}),
+            'message': forms.Textarea(attrs={
+                'placeholder': 'Your message here...',
+                'rows': 5
+            }),
+        }

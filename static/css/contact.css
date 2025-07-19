@@ -1,0 +1,299 @@
+/* ===================== */
+/* CONTACT HERO SECTION  */
+/* ===================== */
+
+.contact-hero {
+    background-color: #fffaf3;
+    padding: 5rem 0;
+    border-bottom: 1px solid #f7e8c9;
+}
+
+.contact-hero h1 {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 2.8rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.contact-hero p.lead {
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    font-size: 1.2rem;
+    max-width: 700px;
+    margin: 0 auto 2rem;
+}
+
+.contact-icon {
+    color: #d97b37;
+}
+
+/* Divider styling */
+.divider {
+    width: 60px;
+    height: 3px;
+    background-color: #d97b37;
+    margin: 1rem auto;
+}
+
+/* ===================== */
+/* CONTACT CARDS         */
+/* ===================== */
+
+.contact-card {
+    background-color: #fffaf3;
+    border-radius: 12px;
+    padding: 2.5rem;
+    border: 1px solid #f7e8c9;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    height: 100%;
+}
+
+.contact-card h2 {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 0.5rem;
+}
+
+/* Underline effect for card headings */
+.contact-card h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 40px;
+    height: 2px;
+    background-color: #d97b37;
+}
+
+/* ===================== */
+/* CONTACT INFO ITEMS    */
+/* ===================== */
+
+.contact-info-item {
+    display: flex;
+    margin-bottom: 1.5rem;
+}
+
+.contact-info-icon {
+    width: 50px;
+    height: 50px;
+    background-color: rgba(217, 123, 55, 0.1);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #d97b37;
+    font-size: 1.2rem;
+    margin-right: 1.5rem;
+    flex-shrink: 0;
+}
+
+.contact-info-content h4 {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.3rem;
+}
+
+.contact-info-content p, 
+.contact-info-content a {
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    margin: 0;
+    text-decoration: none;
+}
+
+.contact-info-content a:hover {
+    color: #d97b37;
+    text-decoration: underline;
+}
+
+/* ===================== */
+/* SOCIAL LINKS         */
+/* ===================== */
+
+.social-links {
+    margin-top: 2rem;
+}
+
+.social-links h4 {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 1.1rem;
+    font-weight: 600;
+}
+
+.social-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background-color: rgba(217, 123, 55, 0.1);
+    border-radius: 50%;
+    color: #d97b37;
+    margin-right: 0.75rem;
+    transition: all 0.3s ease;
+}
+
+.social-icon:hover {
+    background-color: #d97b37;
+    color: #fffaf3;
+    transform: translateY(-3px);
+}
+
+/* ===================== */
+/* FAQ SECTION          */
+/* ===================== */
+
+.faq-section {
+    border-top: 1px solid #f7e8c9;
+    border-bottom: 1px solid #f7e8c9;
+}
+
+.faq-section h2 {
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    font-size: 2rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.faq-section p.lead {
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    font-size: 1.1rem;
+}
+
+/* Accordion styling */
+.accordion-button {
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    color: #3e2f1c;
+    background-color: #fffaf3;
+    padding: 1.25rem 1.5rem;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: #f7e8c9;
+    color: #3e2f1c;
+}
+
+.accordion-button:focus {
+    box-shadow: none;
+    border-color: transparent;
+}
+
+.accordion-body {
+    font-family: 'Lora', serif;
+    color: #6c584c;
+    padding: 1.5rem;
+    background-color: #fff;
+}
+
+/* ===================== */
+/* CONTACT FORM         */
+/* ===================== */
+
+/* Form input styling */
+#contactForm input[type="text"],
+#contactForm input[type="email"],
+#contactForm select,
+#contactForm textarea {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #e8d9b5;
+    border-radius: 8px;
+    background-color: #fff;
+    font-family: 'Lora', serif;
+    color: #3e2f1c;
+    transition: all 0.3s ease;
+    box-shadow: none;
+    appearance: none;
+}
+
+/* Focus states */
+#contactForm input[type="text"]:focus,
+#contactForm input[type="email"]:focus,
+#contactForm select:focus,
+#contactForm textarea:focus {
+    border-color: #d97b37;
+    box-shadow: 0 0 0 0.2rem rgba(217, 123, 55, 0.15);
+    outline: none;
+}
+
+/* Select dropdown styling */
+#contactForm select {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='%23d97b37' d='M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 16px 12px;
+    padding-right: 2.5rem;
+}
+
+/* Textarea specific styling */
+#contactForm textarea {
+    min-height: 150px;
+    resize: vertical;
+}
+
+/* Button styling */
+#contactForm button[type="submit"] {
+    background-color: #d97b37;
+    border: none;
+    padding: 12px 24px;
+    font-family: 'Lora', serif;
+    font-weight: 500;
+    transition: all 0.3s ease;
+}
+
+#contactForm button[type="submit"]:hover {
+    background-color: #c0692f;
+    transform: translateY(-2px);
+}
+
+/* Form validation styling */
+#contactForm .is-invalid {
+    border-color: #dc3545;
+}
+
+#contactForm .invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875em;
+    margin-top: 0.25rem;
+}
+
+/* ===================== */
+/* RESPONSIVE ADJUSTMENTS */
+/* ===================== */
+
+@media (max-width: 768px) {
+    .contact-hero h1,
+    .faq-section h2 {
+        font-size: 2.2rem;
+    }
+    
+    .contact-hero p.lead,
+    .faq-section p.lead {
+        font-size: 1rem;
+    }
+    
+    .contact-card {
+        padding: 1.5rem;
+    }
+    
+    .contact-info-item {
+        flex-direction: column;
+    }
+    
+    .contact-info-icon {
+        margin-bottom: 1rem;
+        margin-right: 0;
+    }
+}

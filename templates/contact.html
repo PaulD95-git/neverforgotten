@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}>
+
+<!-- ===================== -->
+<!-- CONTACT HERO SECTION -->
+<!-- ===================== -->
+<section class="contact-hero py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center">
+        <div class="contact-icon mb-4">
+          <i class="fas fa-envelope-open-text fa-4x" style="color: #d97b37;"></i>
+        </div>
+        <h1 class="display-4 fw-bold mb-3">Contact Us</h1>
+        <p class="lead mb-4">
+          We're here to help you create meaningful memorials and preserve precious memories.
+        </p>
+        <div class="divider mx-auto"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== -->
+<!-- CONTACT CONTENT SECTION -->
+<!-- ===================== -->
+<section class="contact-content py-5">
+  <div class="container">
+    <div class="row g-5">
+      
+      <!-- ===================== -->
+      <!-- CONTACT FORM COLUMN -->
+      <!-- ===================== -->
+      <div class="col-lg-6">
+        <div class="contact-card h-100">
+          <h2 class="fw-bold mb-4">
+            <i class="fas fa-paper-plane me-2"></i> Send Us a Message
+          </h2>
+          
+          <!-- Contact Form -->
+          <form id="contactForm" method="POST" action="{% url 'memorials:contact' %}">
+            {% csrf_token %}
+            
+            <!-- Messages Display -->
+            {% if messages %}
+              {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+              {% endfor %}
+            {% endif %}
+            
+            <!-- Name Field -->
+            <div class="mb-4">
+              <label for="id_name" class="form-label">Your Name</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                {{ form.name }}
+              </div>
+            </div>
+            
+            <!-- Email Field -->
+            <div class="mb-4">
+              <label for="id_email" class="form-label">Email Address</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-envelope"></i></span>
+                {{ form.email }}
+              </div>
+            </div>
+            
+            <!-- Subject Field -->
+            <div class="mb-4">
+              <label for="id_subject" class="form-label">Subject</label>
+              <div class="input-group">
+                <span class="input-group-text"><i class="fas fa-tag"></i></span>
+                {{ form.subject }}
+              </div>
+            </div>
+            
+            <!-- Message Field -->
+            <div class="mb-4">
+              <label for="id_message" class="form-label">Your Message</label>
+              {{ form.message }}
+            </div>
+            
+            <!-- Submit Button -->
+            <div class="d-grid">
+              <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-paper-plane me-2"></i> Send Message
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+      
+      <!-- ===================== -->
+      <!-- CONTACT INFO COLUMN -->
+      <!-- ===================== -->
+      <div class="col-lg-6">
+        <div class="contact-card h-100">
+          <h2 class="fw-bold mb-4">
+            <i class="fas fa-info-circle me-2"></i> Contact Information
+          </h2>
+          
+          <!-- Email Info -->
+          <div class="contact-info-item mb-4">
+            <div class="contact-info-icon">
+              <i class="fas fa-envelope"></i>
+            </div>
+            <div class="contact-info-content">
+              <h4>Email Us</h4>
+              <p>
+                <a href="mailto:support@neverforgotten.com">
+                  support@neverforgotten.com
+                </a>
+              </p>
+            </div>
+          </div>
+          
+          <!-- Support Hours -->
+          <div class="contact-info-item">
+            <div class="contact-info-icon">
+              <i class="fas fa-clock"></i>
+            </div>
+            <div class="contact-info-content">
+              <h4>Support Hours</h4>
+              <p>
+                Monday - Friday: 9am - 5pm <br>
+                Saturday: 10am - 2pm <br>
+                Sunday: Closed
+              </p>
+            </div>
+          </div>
+          
+          <hr class="my-4">
+          
+          <!-- Social Links -->
+          <div class="social-links">
+            <h4 class="mb-3">Connect With Us</h4>
+            <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
+            <a href="#" class="social-icon"><i class="fab fa-linkedin-in"></i></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== -->
+<!-- FAQ SECTION -->
+<!-- ===================== -->
+<section class="faq-section py-5 bg-light">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8 text-center mb-5">
+        <h2 class="fw-bold mb-3">Frequently Asked Questions</h2>
+        <div class="divider mx-auto"></div>
+        <p class="lead">Quick answers to common questions</p>
+      </div>
+    </div>
+    
+    <div class="row justify-content-center">
+      <div class="col-lg-10">
+        <div class="accordion" id="faqAccordion">
+          
+          <!-- ===================== -->
+          <!-- FAQ ITEM 1 -->
+          <!-- ===================== -->
+          <div class="accordion-item mb-3 border-0 rounded shadow-sm">
+            <h3 class="accordion-header" id="headingOne">
+              <button class="accordion-button collapsed" type="button" 
+                      data-bs-toggle="collapse" data-bs-target="#collapseOne">
+                <i class="fas fa-question-circle me-2" style="color: #d97b37;"></i> 
+                How do I create a memorial?
+              </button>
+            </h3>
+            <div id="collapseOne" class="accordion-collapse collapse" 
+                 aria-labelledby="headingOne" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Creating a memorial is simple. Click on "Create Memorial" in the 
+                navigation menu, fill in the basic information about your loved one, 
+                and you can start adding photos, stories, and other memories. Our 
+                step-by-step guide will help you through the process.
+              </div>
+            </div>
+          </div>
+          
+          <!-- ===================== -->
+          <!-- FAQ ITEM 2 -->
+          <!-- ===================== -->
+          <div class="accordion-item mb-3 border-0 rounded shadow-sm">
+            <h3 class="accordion-header" id="headingTwo">
+              <button class="accordion-button collapsed" type="button" 
+                      data-bs-toggle="collapse" data-bs-target="#collapseTwo">
+                <i class="fas fa-question-circle me-2" style="color: #d97b37;"></i> 
+                How long will my memorial remain online?
+              </button>
+            </h3>
+            <div id="collapseTwo" class="accordion-collapse collapse" 
+                 aria-labelledby="headingTwo" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Your memorial will remain online forever as part of our commitment 
+                to preserving memories. We offer permanent hosting with no expiration 
+                date, ensuring future generations can access and contribute to the memorial.
+              </div>
+            </div>
+          </div>
+          
+          <!-- ===================== -->
+          <!-- FAQ ITEM 3 -->
+          <!-- ===================== -->
+          <div class="accordion-item mb-3 border-0 rounded shadow-sm">
+            <h3 class="accordion-header" id="headingThree">
+              <button class="accordion-button collapsed" type="button" 
+                      data-bs-toggle="collapse" data-bs-target="#collapseThree">
+                <i class="fas fa-question-circle me-2" style="color: #d97b37;"></i> 
+                Can I make my memorial private?
+              </button>
+            </h3>
+            <div id="collapseThree" class="accordion-collapse collapse" 
+                 aria-labelledby="headingThree" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Yes, you can set your memorial to private during creation or at any 
+                time afterward. Private memorials are only accessible to people you 
+                specifically invite via email. You can change privacy settings at any time.
+              </div>
+            </div>
+          </div>
+          
+          <!-- ===================== -->
+          <!-- FAQ ITEM 4 -->
+          <!-- ===================== -->
+          <div class="accordion-item mb-3 border-0 rounded shadow-sm">
+            <h3 class="accordion-header" id="headingFour">
+              <button class="accordion-button collapsed" type="button" 
+                      data-bs-toggle="collapse" data-bs-target="#collapseFour">
+                <i class="fas fa-question-circle me-2" style="color: #d97b37;"></i> 
+                How do QR codes work with memorials?
+              </button>
+            </h3>
+            <div id="collapseFour" class="accordion-collapse collapse" 
+                 aria-labelledby="headingFour" data-bs-parent="#faqAccordion">
+              <div class="accordion-body">
+                Each memorial automatically generates a unique QR code that links 
+                directly to the memorial page. You can download and print this code 
+                to include on memorial cards, headstones, or other keepsakes. When 
+                scanned with a smartphone camera, it will open the memorial directly.
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- FAQ Footer -->
+        <div class="text-center mt-5">
+          <p>
+            Don't see your question here? 
+            <a href="#contactForm">Send us a message</a> and we'll be happy to help.
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/contact.css' %}">
+{% endblock %}
